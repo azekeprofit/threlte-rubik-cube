@@ -22,3 +22,5 @@ export class CubeColor {
     this.sideB = { [-1]: COLORS.orange, 0: "maroon", 1: COLORS.red }[z];
   }
 }
+
+export const degree90=Math.PI/2;
