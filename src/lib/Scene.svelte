@@ -20,7 +20,7 @@
 </script>
 
 <T.PerspectiveCamera makeDefault position={[x, y, z]}>
-  <OrbitControls></OrbitControls>       <!-- onchange={(e) => console.dir(e.target.object.position)} -->
+  <OrbitControls ></OrbitControls>       <!-- onchange={(e) => console.dir(e.target.object.position)} -->
 </T.PerspectiveCamera>
 
 
