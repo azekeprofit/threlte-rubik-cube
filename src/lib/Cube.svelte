@@ -1,7 +1,8 @@
 <script lang="ts">
   type vector3 = [number, number, number];
   import { T } from "@threlte/core";
-  const size=0.99;
+  const fullSize=1;
+  const size=fullSize-.01;
   import {DoubleSide,Vector3,Euler, MeshBasicMaterial} from 'three';
   export let position: vector3;
   export let rotation: vector3;
@@ -18,6 +19,6 @@
   <T.BoxGeometry args={[size, size,size]} />
 </T.Mesh>
 <T.Mesh {position} {rotation}>
-  <T.BoxGeometry args={[1, 1, 1]} />
+  <T.BoxGeometry args={[fullSize,fullSize,fullSize]} />
   <T.MeshBasicMaterial color={"#000"} wireframe={true} />
 </T.Mesh>

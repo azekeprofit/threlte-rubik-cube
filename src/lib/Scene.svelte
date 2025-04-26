@@ -22,8 +22,7 @@
 <T.PerspectiveCamera makeDefault position={[x, y, z]}>
   <OrbitControls></OrbitControls>       <!-- onchange={(e) => console.dir(e.target.object.position)} -->
 </T.PerspectiveCamera>
-<T.DirectionalLight position.y={10} position.z={10} />
-<T.AmbientLight intensity={0.3} />
+
 
 <!-- <Pane
   theme={ThemeUtils.presets.light}
@@ -50,7 +49,9 @@
         <Cube
           position={[x, y, z]}
           rotation={[0, 0, 0]}
-          color={{ [-1]: COLORS.red, 0: COLORS.blue, 1: COLORS.green }[x]}
+          color={{ [-1]: COLORS.yellow, 1: COLORS.white }[y]}
+          colorSideA={{ [-1]: COLORS.blue, 1: COLORS.green }[x]}
+          colorSideB={{ [-1]: COLORS.orange, 1: COLORS.red }[z]}
         />
       {/if}
     {/each}
