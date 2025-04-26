@@ -4,12 +4,9 @@
   const fullSize=1;
   const size=fullSize-.01;
   import {DoubleSide,Vector3,Euler, MeshBasicMaterial} from 'three';
-  export let position: vector3;
-  export let rotation: vector3;
-  export let color: string|undefined;
-  export let colorSideA: string|undefined;
-  export let colorSideB: string|undefined;
-  let m1:any=new MeshBasicMaterial({color});
+  
+  const { position,rotation,color,colorSideA,colorSideB}=$props<{position:vector3,rotation:vector3,color?:string,colorSideA?:string,colorSideB?:string}>();
+  let m1:any=new MeshBasicMaterial({color}); // this shuts up Typescript
   let m2=new MeshBasicMaterial({color:colorSideA});
   let m3=new MeshBasicMaterial({color:colorSideB});
 </script>
