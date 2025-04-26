@@ -1,0 +1,74 @@
+<script>
+  import { T } from "@threlte/core";
+  import {  OrbitControls, TrackballControls } from "@threlte/extras";
+    import { Checkbox, Pane, ThemeUtils, Slider } from 'svelte-tweakpane-ui'
+
+  const COLORS = {
+    white: "#FFFFFF",
+    yellow: "#FFFF00",
+    red: "#FF0000",
+    orange: "#FFA500",
+    blue: "#0000FF",
+    green: "#00FF00",
+  };
+
+  const positions = [-1, 0, 1];
+  let x=-6.087414455248885;
+  let y=2.4046333628934424;
+  let z=2.335561018356455;
+</script>
+
+<T.PerspectiveCamera
+  makeDefault
+  position={[x,y,z]}
+>
+  <OrbitControls
+  onchange={(e)=>console.dir(e.target.object.position)}
+  >
+  </OrbitControls>
+</T.PerspectiveCamera>
+<T.DirectionalLight
+  position.y={10}
+  position.z={10}
+/>
+<T.AmbientLight intensity={0.3} />
+
+<!-- <Pane
+  theme={ThemeUtils.presets.light}
+  position="fixed"
+  title="OrbitControls"
+>
+  <Slider
+    label="x"
+    bind:value={x}
+  />
+  <Slider
+    label="y"
+    bind:value={y}
+  />
+  <Slider
+    label="z"
+    bind:value={z}
+  />
+</Pane> -->
+{#each positions as x}
+  {#each positions as y}
+    {#each positions as z}
+      {#if !(x == 0 && x == y && y == z)}
+        <T.Mesh position={[x, y, z]} rotation={[0,0,0]}>
+          <T.BoxGeometry args={[0.95, 0.95, 0.95]} />
+          <T.MeshBasicMaterial 
+            color={{ [-1]: COLORS.red, 0: COLORS.blue, 1: COLORS.green }[x]}
+          />
+        </T.Mesh>
+        <T.Mesh position={[x, y, z]} rotation={[0,0,0]}>
+          <T.BoxGeometry args={[1, 1, 1]} />
+          <T.MeshBasicMaterial 
+            color={'#000'}
+            wireframe={true}
+          />
+        </T.Mesh>
+      {/if}
+    {/each}
+  {/each}
+{/each}
