@@ -1,8 +1,9 @@
 <script>
-  import { T } from "@threlte/core";
+  import { T, useTask } from "@threlte/core";
   import { OrbitControls } from "@threlte/extras";
   // import { Checkbox, Pane, ThemeUtils, Slider } from "svelte-tweakpane-ui";
   import Cube from "./Cube.svelte";
+  import { Group } from "three";
 
   const COLORS = {
     white: "#FFFFFF",
@@ -17,6 +18,11 @@
   let x = -6.087414455248885;
   let y = 2.4046333628934424;
   let z = 2.335561018356455;
+
+  let rotation = $state(0);
+  useTask((delta) => {
+    rotation += delta
+  })
 </script>
 
 <T.PerspectiveCamera makeDefault position={[x, y, z]}>
@@ -43,6 +49,7 @@
   />
 </Pane> -->
 {#each positions as x}
+<T.Group rotation.x={x==0?rotation:0}>
   {#each positions as y}
     {#each positions as z}
       {#if !(x == 0 && x == y && y == z)}
@@ -56,4 +63,5 @@
       {/if}
     {/each}
   {/each}
+</T.Group>
 {/each}
