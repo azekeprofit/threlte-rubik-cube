@@ -1,7 +1,7 @@
 <script>
   import { T } from "@threlte/core";
-  import { OrbitControls, TrackballControls } from "@threlte/extras";
-  import { Checkbox, Pane, ThemeUtils, Slider } from "svelte-tweakpane-ui";
+  import { OrbitControls } from "@threlte/extras";
+  // import { Checkbox, Pane, ThemeUtils, Slider } from "svelte-tweakpane-ui";
   import Cube from "./Cube.svelte";
 
   const COLORS = {
@@ -20,9 +20,7 @@
 </script>
 
 <T.PerspectiveCamera makeDefault position={[x, y, z]}>
-  <OrbitControls
-    onchange={(e) => console.dir(e.target.object.position)}
-  ></OrbitControls>
+  <OrbitControls></OrbitControls>       <!-- onchange={(e) => console.dir(e.target.object.position)} -->
 </T.PerspectiveCamera>
 <T.DirectionalLight position.y={10} position.z={10} />
 <T.AmbientLight intensity={0.3} />
