@@ -1,16 +1,18 @@
 <script lang="ts">
   type vector3 = [coord, coord, coord];
   import { T } from "@threlte/core";
-  import { Edges } from "@threlte/extras";
+  import { Edges, useTexture } from "@threlte/extras";
   import type { SvelteMap } from "svelte/reactivity";
   import { CubeColor, type coord } from "./model.svelte";
 
   const {
     position,
     colors,
+    ring,
   }: {
     position: vector3;
     colors: SvelteMap<string, CubeColor>;
+    ring: CubeColor[];
   } = $props();
 
   let [x, y, z] = position;
@@ -29,13 +31,15 @@
   }
 </script>
 
-<T.Mesh {position}>
-  <T.BoxGeometry args={[1, 1, 1]} />
-  <T.MeshBasicMaterial color={c.right} {attach} />
-  <T.MeshBasicMaterial color={c.left} {attach} />
-  <T.MeshBasicMaterial color={c.bottom} {attach} />
-  <T.MeshBasicMaterial color={c.top} {attach} />
-  <T.MeshBasicMaterial color={c.front} {attach} />
-  <T.MeshBasicMaterial color={c.back} {attach} />
-  <Edges color="black" thickness={1} />
-</T.Mesh>
+{#await useTexture(`/assets/${ring.indexOf(c)}.png`) then texture}
+  <T.Mesh {position}>
+    <T.BoxGeometry args={[1, 1, 1]} />
+    <T.MeshBasicMaterial map={texture} color={c.right} {attach} />
+    <T.MeshBasicMaterial map={texture} color={c.left} {attach} />
+    <T.MeshBasicMaterial map={texture} color={c.bottom} {attach} />
+    <T.MeshBasicMaterial map={texture} color={c.top} {attach} />
+    <T.MeshBasicMaterial map={texture} color={c.front} {attach} />
+    <T.MeshBasicMaterial map={texture} color={c.back} {attach} />
+    <Edges color="black" thickness={1} />
+  </T.Mesh>
+{/await}

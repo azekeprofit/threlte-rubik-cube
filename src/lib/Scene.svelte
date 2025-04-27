@@ -34,6 +34,8 @@
   import Cube from "./Cube.svelte";
   let colors = new SvelteMap<string, CubeColor>();
 
+  let ring=$state<CubeColor[]>([]);
+
   let rotation = $state(0);
   let yReverse = $derived(rotAxis == "y" ? !reverse : reverse);
   let step = $derived(yReverse ? -2 : 2);
@@ -43,15 +45,13 @@
       if (Math.abs(rotation) > degree90) {
         task.stop();
         rotation = 0;
-        let ring = [];
+        ring = [];
         let i = 0;
         for (let c of colors.values()) {
           if (c[rotAxis] == whichAxis) {
             ring[ringOrder[i++]] = c;
           }
         }
-
-console.dir(ring)
 
         if (reverse)
           [
@@ -130,7 +130,7 @@ console.dir(ring)
     <T.Group rotation.x={x == whichAxis ? rotation : 0}>
       {#each positions as y}
         {#each positions as z}
-          <Cube position={[x, y, z]} {colors} />
+          <Cube position={[x, y, z]} {colors} {ring}/>
         {/each}
       {/each}
     </T.Group>
@@ -142,9 +142,7 @@ console.dir(ring)
     <T.Group rotation.y={y == whichAxis ? rotation : 0}>
       {#each positions as x}
         {#each positions as z}
-          {#if !(x == 0 && x == y && y == z)}
-            <Cube position={[x, y, z]} {colors} />
-          {/if}
+            <Cube position={[x, y, z]} {colors} {ring} />
         {/each}
       {/each}
     </T.Group>
@@ -156,9 +154,7 @@ console.dir(ring)
     <T.Group rotation.z={z == whichAxis ? rotation : 0}>
       {#each positions as x}
         {#each positions as y}
-          {#if !(x == 0 && x == y && y == z)}
-            <Cube position={[x, y, z]} {colors} />
-          {/if}
+            <Cube position={[x, y, z]} {colors} {ring} />
         {/each}
       {/each}
     </T.Group>
