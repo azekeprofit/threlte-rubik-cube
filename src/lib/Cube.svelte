@@ -29,9 +29,11 @@
       parent.material = [...parent.material, ref];
     else parent.material = [ref];
   }
+
+  const base=import.meta.env.BASE_URL;
 </script>
 
-{#await useTexture(`/assets/${ring.indexOf(c)}.png`) then texture}
+{#await useTexture(`${base}/assets/${ring.indexOf(c)}.png`) then texture}
   <T.Mesh {position}>
     <T.BoxGeometry args={[1, 1, 1]} />
     <T.MeshBasicMaterial map={texture} color={c.right} {attach} />
