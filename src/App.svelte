@@ -3,9 +3,9 @@
   import Scene from "./lib/Scene.svelte";
   import type { positions, rotAxisType } from "./lib/model.svelte";
 
-  let whichAxis = $state<(typeof positions)[number]>(0);
-  let rotAxis = $state<rotAxisType>("x");
-  let reverse = $state(false);
+  let whichAxis = $state<(typeof positions)[number]>(1);
+  let rotAxis = $state<rotAxisType>("y");
+  let reverse = $state(true);
 
   let start:()=>void=$state(null!);
 </script>

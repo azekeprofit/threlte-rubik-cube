@@ -1,26 +1,32 @@
 <script lang="ts">
-  import { T, useTask, type ThrelteUseTask } from "@threlte/core";
+  import { T, useTask } from "@threlte/core";
   import { OrbitControls } from "@threlte/extras";
   import {
+    type rotationProps,
+    type rotAxisType,
+    type side,
     CubeColor,
     degree90,
     positions,
-    type rotAxisType,
   } from "./model.svelte";
 
-  let x = -6.087414455248885;
-  let y = 2.4046333628934424;
-  let z = 2.335561018356455;
+  let x = -4.437954042433267;
+  let y = 3.866852872687497;
+  let z = 3.6940133200380143;
+
+  const ringOrder = [0, 1, 2, 7, 8, 3, 6, 5, 4];
+  const ringSides: Record<rotAxisType, side[]> = {
+    x: ["front", "top", "back", "bottom", "left", "right"],
+    y: ["front", "left", "back", "right", "top", "bottom"],
+    z: ["bottom", "left", "top", "right", "front", "back"],
+  };
 
   let {
     whichAxis,
     rotAxis,
     reverse,
     start = $bindable(),
-  }: {
-    whichAxis: (typeof positions)[number];
-    rotAxis: rotAxisType;
-    reverse: boolean;
+  }: rotationProps & {
     start: () => void;
   } = $props();
 
@@ -29,12 +35,77 @@
   let colors = new SvelteMap<string, CubeColor>();
 
   let rotation = $state(0);
+  let yReverse = $derived(rotAxis == "y" ? !reverse : reverse);
+  let step = $derived(yReverse ? -2 : 2);
   let task = useTask(
     (delta) => {
-      rotation += delta * (reverse ? -2 : 2);
-      if (rotation > degree90) {
+      rotation += delta * step;
+      if (Math.abs(rotation) > degree90) {
         task.stop();
-        rotation=0;
+        rotation = 0;
+        let ring = [];
+        let i = 0;
+        for (let c of colors.values()) {
+          if (c[rotAxis] == whichAxis) {
+            ring[ringOrder[i++]] = c;
+          }
+        }
+        if (reverse)
+          [
+            ring[2][ringSides[rotAxis][0]],
+            ring[3][ringSides[rotAxis][0]],
+            ring[4][ringSides[rotAxis][0]],
+            ring[4][ringSides[rotAxis][3]],
+            ring[5][ringSides[rotAxis][3]],
+            ring[6][ringSides[rotAxis][3]],
+            ring[6][ringSides[rotAxis][2]],
+            ring[7][ringSides[rotAxis][2]],
+            ring[0][ringSides[rotAxis][2]],
+            ring[0][ringSides[rotAxis][1]],
+            ring[1][ringSides[rotAxis][1]],
+            ring[2][ringSides[rotAxis][1]],
+          ] = [
+            ring[0][ringSides[rotAxis][1]],
+            ring[1][ringSides[rotAxis][1]],
+            ring[2][ringSides[rotAxis][1]],
+            ring[2][ringSides[rotAxis][0]],
+            ring[3][ringSides[rotAxis][0]],
+            ring[4][ringSides[rotAxis][0]],
+            ring[4][ringSides[rotAxis][3]],
+            ring[5][ringSides[rotAxis][3]],
+            ring[6][ringSides[rotAxis][3]],
+            ring[6][ringSides[rotAxis][2]],
+            ring[7][ringSides[rotAxis][2]],
+            ring[0][ringSides[rotAxis][2]],
+          ];
+        else
+          [
+            ring[0][ringSides[rotAxis][1]],
+            ring[1][ringSides[rotAxis][1]],
+            ring[2][ringSides[rotAxis][1]],
+            ring[2][ringSides[rotAxis][0]],
+            ring[3][ringSides[rotAxis][0]],
+            ring[4][ringSides[rotAxis][0]],
+            ring[4][ringSides[rotAxis][3]],
+            ring[5][ringSides[rotAxis][3]],
+            ring[6][ringSides[rotAxis][3]],
+            ring[6][ringSides[rotAxis][2]],
+            ring[7][ringSides[rotAxis][2]],
+            ring[0][ringSides[rotAxis][2]],
+          ] = [
+            ring[2][ringSides[rotAxis][0]],
+            ring[3][ringSides[rotAxis][0]],
+            ring[4][ringSides[rotAxis][0]],
+            ring[4][ringSides[rotAxis][3]],
+            ring[5][ringSides[rotAxis][3]],
+            ring[6][ringSides[rotAxis][3]],
+            ring[6][ringSides[rotAxis][2]],
+            ring[7][ringSides[rotAxis][2]],
+            ring[0][ringSides[rotAxis][2]],
+            ring[0][ringSides[rotAxis][1]],
+            ring[1][ringSides[rotAxis][1]],
+            ring[2][ringSides[rotAxis][1]],
+          ];
       }
     },
     { autoStart: false }
@@ -56,9 +127,7 @@
     <T.Group rotation.x={x == whichAxis ? rotation : 0}>
       {#each positions as y}
         {#each positions as z}
-          {#if !(x == 0 && x == y && y == z)}
-            <Cube position={[x, y, z]} {colors} />
-          {/if}
+          <Cube position={[x, y, z]} {colors} />
         {/each}
       {/each}
     </T.Group>

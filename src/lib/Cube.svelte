@@ -25,12 +25,15 @@
     colors.set(posKey, c);
   }
 
-  let m1: any = new MeshBasicMaterial({ color: c.top }); // this shuts up Typescript
-  let m2 = new MeshBasicMaterial({ color: c.sideA });
-  let m3 = new MeshBasicMaterial({ color: c.sideB });
+  let top: any = $derived(new MeshBasicMaterial({ color: c.top })); // this shuts up Typescript
+  let left = $derived(new MeshBasicMaterial({ color: c.left }));
+  let right = $derived(new MeshBasicMaterial({ color: c.right }));
+  let front = $derived(new MeshBasicMaterial({ color: c.front }));
+  let back = $derived(new MeshBasicMaterial({ color: c.back }));
+  let bottom = $derived(new MeshBasicMaterial({ color: c.bottom }));
 </script>
 
-<T.Mesh {position} material={[m2, m2, m1, m1, m3, m3]}>
+<T.Mesh {position} material={[right, left, bottom, top, front, back]}>
   <T.BoxGeometry args={[1, 1, 1]} />
   <Edges color="black" thickness={1} />
 </T.Mesh>
