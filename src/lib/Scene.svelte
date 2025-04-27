@@ -25,9 +25,11 @@
     whichAxis,
     rotAxis,
     reverse,
+    debug,
     start = $bindable(),
   }: rotationProps & {
     start: () => void;
+    debug: boolean;
   } = $props();
 
   import { SvelteMap } from "svelte/reactivity";
@@ -94,9 +96,6 @@
             ring[0][ringSides[rotAxis][5]],
             ring[1][ringSides[rotAxis][5]],
             ring[2][ringSides[rotAxis][5]],
-
-            
-
           ] = [
             ring[0][ringSides[rotAxis][1]],
             ring[1][ringSides[rotAxis][1]],
@@ -124,7 +123,6 @@
             ring[7][ringSides[rotAxis][4]],
             ring[0][ringSides[rotAxis][4]],
 
-            
             ring[0][ringSides[rotAxis][5]],
             ring[1][ringSides[rotAxis][5]],
             ring[2][ringSides[rotAxis][5]],
@@ -152,6 +150,32 @@
             ring[6][ringSides[rotAxis][2]],
             ring[7][ringSides[rotAxis][2]],
             ring[0][ringSides[rotAxis][2]],
+
+            ring[0][ringSides[rotAxis][4]],
+            ring[1][ringSides[rotAxis][4]],
+            ring[2][ringSides[rotAxis][4]],
+            ring[2][ringSides[rotAxis][4]],
+            ring[3][ringSides[rotAxis][4]],
+            ring[4][ringSides[rotAxis][4]],
+            ring[4][ringSides[rotAxis][4]],
+            ring[5][ringSides[rotAxis][4]],
+            ring[6][ringSides[rotAxis][4]],
+            ring[6][ringSides[rotAxis][4]],
+            ring[7][ringSides[rotAxis][4]],
+            ring[0][ringSides[rotAxis][4]],
+
+            ring[0][ringSides[rotAxis][5]],
+            ring[1][ringSides[rotAxis][5]],
+            ring[2][ringSides[rotAxis][5]],
+            ring[2][ringSides[rotAxis][5]],
+            ring[3][ringSides[rotAxis][5]],
+            ring[4][ringSides[rotAxis][5]],
+            ring[4][ringSides[rotAxis][5]],
+            ring[5][ringSides[rotAxis][5]],
+            ring[6][ringSides[rotAxis][5]],
+            ring[6][ringSides[rotAxis][5]],
+            ring[7][ringSides[rotAxis][5]],
+            ring[0][ringSides[rotAxis][5]],
           ] = [
             ring[2][ringSides[rotAxis][0]],
             ring[3][ringSides[rotAxis][0]],
@@ -165,6 +189,32 @@
             ring[0][ringSides[rotAxis][1]],
             ring[1][ringSides[rotAxis][1]],
             ring[2][ringSides[rotAxis][1]],
+
+            ring[2][ringSides[rotAxis][4]],
+            ring[3][ringSides[rotAxis][4]],
+            ring[4][ringSides[rotAxis][4]],
+            ring[4][ringSides[rotAxis][4]],
+            ring[5][ringSides[rotAxis][4]],
+            ring[6][ringSides[rotAxis][4]],
+            ring[6][ringSides[rotAxis][4]],
+            ring[7][ringSides[rotAxis][4]],
+            ring[0][ringSides[rotAxis][4]],
+            ring[0][ringSides[rotAxis][4]],
+            ring[1][ringSides[rotAxis][4]],
+            ring[2][ringSides[rotAxis][4]],
+
+            ring[2][ringSides[rotAxis][5]],
+            ring[3][ringSides[rotAxis][5]],
+            ring[4][ringSides[rotAxis][5]],
+            ring[4][ringSides[rotAxis][5]],
+            ring[5][ringSides[rotAxis][5]],
+            ring[6][ringSides[rotAxis][5]],
+            ring[6][ringSides[rotAxis][5]],
+            ring[7][ringSides[rotAxis][5]],
+            ring[0][ringSides[rotAxis][5]],
+            ring[0][ringSides[rotAxis][5]],
+            ring[1][ringSides[rotAxis][5]],
+            ring[2][ringSides[rotAxis][5]],
           ];
       }
     },
@@ -187,7 +237,7 @@
     <T.Group rotation.x={x == whichAxis ? rotation : 0}>
       {#each positions as y}
         {#each positions as z}
-          <Cube position={[x, y, z]} {colors} {ring} />
+          <Cube position={[x, y, z]} {colors} ring={debug ? ring : []} />
         {/each}
       {/each}
     </T.Group>
@@ -199,7 +249,7 @@
     <T.Group rotation.y={y == whichAxis ? rotation : 0}>
       {#each positions as x}
         {#each positions as z}
-          <Cube position={[x, y, z]} {colors} {ring} />
+          <Cube position={[x, y, z]} {colors} ring={debug ? ring : []} />
         {/each}
       {/each}
     </T.Group>
@@ -211,7 +261,7 @@
     <T.Group rotation.z={z == whichAxis ? rotation : 0}>
       {#each positions as x}
         {#each positions as y}
-          <Cube position={[x, y, z]} {colors} {ring} />
+          <Cube position={[x, y, z]} {colors} ring={debug ? ring : []} />
         {/each}
       {/each}
     </T.Group>

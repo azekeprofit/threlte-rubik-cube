@@ -6,13 +6,14 @@
   let whichAxis = $state<(typeof positions)[number]>(1);
   let rotAxis = $state<rotAxisType>("y");
   let reverse = $state(true);
+  let debug=$state(false);
 
   let start:()=>void=$state(null!);
 </script>
 
 <div style="width:500px;height:500px">
   <Canvas>
-    <Scene {whichAxis} {rotAxis} {reverse} bind:start />
+    <Scene {whichAxis} {rotAxis} {reverse} {debug} bind:start />
   </Canvas>
 </div>
 <div>
@@ -72,6 +73,9 @@
 <div>
   <label>
     <input type="checkbox" bind:checked={reverse} />rev
+  </label>
+  <label>
+    <input type="checkbox" bind:checked={debug} />debug
   </label>
 </div>
 <div>
