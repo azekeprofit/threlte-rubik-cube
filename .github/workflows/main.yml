@@ -1,6 +1,7 @@
 name: Build and Deploy Static Svelte App
 
 on:
+  push:
     branches: [ master ]
   workflow_dispatch:
 
