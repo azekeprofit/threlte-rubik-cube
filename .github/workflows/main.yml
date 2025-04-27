@@ -1,7 +1,6 @@
 name: Build and Deploy Static Svelte App
 
 on:
-  push:
     branches: [ master ]
   workflow_dispatch:
 
@@ -47,5 +46,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: build
+          folder: dist
           branch: gh-pages
