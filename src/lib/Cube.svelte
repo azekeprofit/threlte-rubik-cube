@@ -3,7 +3,6 @@
   import { T } from "@threlte/core";
   import { Edges } from "@threlte/extras";
   import type { SvelteMap } from "svelte/reactivity";
-  import { MeshBasicMaterial } from "three";
   import { CubeColor, type coord } from "./model.svelte";
 
   const {
@@ -17,23 +16,26 @@
   let [x, y, z] = position;
   const posKey = JSON.stringify(position);
 
-  let c: CubeColor;
-  if (colors.has(posKey)) {
-    c = colors.get(posKey)!;
-  } else {
-    c = new CubeColor(x, y, z);
-    colors.set(posKey, c);
+  if (!colors.has(posKey)) {
+    colors.set(posKey, new CubeColor(x, y, z));
   }
 
-  let top: any = $derived(new MeshBasicMaterial({ color: c.top })); // this shuts up Typescript
-  let left = $derived(new MeshBasicMaterial({ color: c.left }));
-  let right = $derived(new MeshBasicMaterial({ color: c.right }));
-  let front = $derived(new MeshBasicMaterial({ color: c.front }));
-  let back = $derived(new MeshBasicMaterial({ color: c.back }));
-  let bottom = $derived(new MeshBasicMaterial({ color: c.bottom }));
+  let c = colors.get(posKey)!;
+
+  function attach({ parent, ref }: { parent: any; ref: any }) {
+    if (Array.isArray(parent.material))
+      parent.material = [...parent.material, ref];
+    else parent.material = [ref];
+  }
 </script>
 
-<T.Mesh {position} material={[right, left, bottom, top, front, back]}>
+<T.Mesh {position}>
   <T.BoxGeometry args={[1, 1, 1]} />
+  <T.MeshBasicMaterial color={c.right} {attach} />
+  <T.MeshBasicMaterial color={c.left} {attach} />
+  <T.MeshBasicMaterial color={c.bottom} {attach} />
+  <T.MeshBasicMaterial color={c.top} {attach} />
+  <T.MeshBasicMaterial color={c.front} {attach} />
+  <T.MeshBasicMaterial color={c.back} {attach} />
   <Edges color="black" thickness={1} />
 </T.Mesh>

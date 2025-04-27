@@ -51,6 +51,8 @@
           }
         }
 
+console.dir(ring)
+
         if (reverse)
           [
             ring[2][ringSides[rotAxis][0]],
