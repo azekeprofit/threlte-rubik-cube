@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Canvas } from "@threlte/core";
-  import Scene from "./lib/Scene.svelte";
+  import Scene from "./components/Scene.svelte";
   import type { positions, rotAxisType } from "./lib/model.svelte";
 
   let whichAxis = $state<(typeof positions)[number]>(1);

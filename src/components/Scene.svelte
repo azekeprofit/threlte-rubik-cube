@@ -8,7 +8,7 @@
     degree90,
     positions,
     rotateColoursInRing
-  } from "./model.svelte";
+  } from "../lib/model.svelte";
 
   let x = -4.437954042433267;
   let y = 3.866852872687497;
@@ -28,6 +28,7 @@
   } = $props();
 
   import { SvelteMap } from "svelte/reactivity";
+  import { Pulse } from "../reactive/pulse.svelte";
   import Cube from "./Cube.svelte";
   let colors = new SvelteMap<string, CubeColor>();
 
@@ -61,6 +62,9 @@
     task.start();
     rotation = 0;
   };
+
+  
+  let pulse = new Pulse(0, 15, 30);
 </script>
 
 <T.PerspectiveCamera makeDefault position={[x, y, z]}>
@@ -75,7 +79,7 @@
     <T.Group rotation.x={x == whichAxis ? rotation : 0}>
       {#each positions as y}
         {#each positions as z}
-          <Cube position={[x, y, z]} {colors} {ring} {debug} />
+          <Cube position={[x, y, z]} {colors} {ring} {debug} {pulse} />
         {/each}
       {/each}
     </T.Group>
@@ -87,7 +91,7 @@
     <T.Group rotation.y={y == whichAxis ? rotation : 0}>
       {#each positions as x}
         {#each positions as z}
-          <Cube position={[x, y, z]} {colors} {ring} {debug} />
+          <Cube position={[x, y, z]} {colors} {ring} {debug} {pulse} />
         {/each}
       {/each}
     </T.Group>
@@ -99,7 +103,7 @@
     <T.Group rotation.z={z == whichAxis ? rotation : 0}>
       {#each positions as x}
         {#each positions as y}
-          <Cube position={[x, y, z]} {colors} {ring} {debug} />
+          <Cube position={[x, y, z]} {colors} {ring} {debug} {pulse} />
         {/each}
       {/each}
     </T.Group>

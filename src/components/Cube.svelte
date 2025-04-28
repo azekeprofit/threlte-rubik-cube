@@ -3,18 +3,26 @@
   import { T, useTask } from "@threlte/core";
   import { Edges, useTexture } from "@threlte/extras";
   import type { SvelteMap } from "svelte/reactivity";
-  import { COLORS, CubeColor, type colorKey, type coord } from "./model.svelte";
+  import {
+    COLORS,
+    CubeColor,
+    type colorKey,
+    type coord,
+  } from "../lib/model.svelte";
+  import { Pulse } from "../reactive/pulse.svelte";
 
   const {
     position,
     colors,
     ring,
     debug,
+    pulse
   }: {
     position: vector3;
     colors: SvelteMap<string, CubeColor>;
     ring: CubeColor[];
     debug: boolean;
+    pulse:Pulse;
   } = $props();
 
   let [x, y, z] = position;
@@ -37,15 +45,9 @@
     `${import.meta.env.BASE_URL}/assets/${debug ? index : -1}.png`
   );
 
-  let timer = $state(0);
-  useTask((delta) => {
-    if (index != -1) timer += delta;
-    else timer = 0;
-  });
-
   function hsl(c: colorKey) {
     const [h, s, l] = COLORS[c];
-    return `hsl(${h},${s}%,${l - 20 - ((timer * 15) % 10)}%)`;
+    return `hsl(${h},${s}%,${index==-1?l:l - pulse.value}%)`;
   }
 </script>
 
