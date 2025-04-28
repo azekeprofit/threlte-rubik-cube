@@ -1,15 +1,13 @@
 <script lang="ts">
   import { T, useTask } from "@threlte/core";
-  import { Environment, OrbitControls, useTexture } from "@threlte/extras";
+  import { Environment, OrbitControls } from "@threlte/extras";
   import {
     type rotationProps,
-    type rotAxisType,
-    type side,
     assetPath,
     CubeColor,
     degree90,
     positions,
-    rotateColoursInRing,
+    rotateColoursInRing
   } from "./model.svelte";
 
   let x = -4.437954042433267;
@@ -110,5 +108,5 @@
 
 <Environment
   isBackground={false}
-  url={`${assetPath}/mpumalanga_veld_puresky_1k.hdr`}
+  url={`${assetPath}/studio_small_08_1k.hdr`}
 />
