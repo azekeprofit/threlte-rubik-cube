@@ -1,13 +1,15 @@
 <script lang="ts">
   import { T, useTask } from "@threlte/core";
-  import { OrbitControls } from "@threlte/extras";
+  import { Environment, OrbitControls, useTexture } from "@threlte/extras";
   import {
     type rotationProps,
     type rotAxisType,
     type side,
+    assetPath,
     CubeColor,
     degree90,
     positions,
+    rotateColoursInRing,
   } from "./model.svelte";
 
   let x = -4.437954042433267;
@@ -15,11 +17,6 @@
   let z = 3.6940133200380143;
 
   const ringOrder = [0, 1, 2, 7, 8, 3, 6, 5, 4];
-  const ringSides: Record<rotAxisType, side[]> = {
-    x: ["front", "top", "back", "bottom", "left", "right"],
-    y: ["front", "left", "back", "right", "top", "bottom"],
-    z: ["right", "top", "left", "bottom", "front", "back"],
-  };
 
   let {
     whichAxis,
@@ -49,7 +46,6 @@
 
   let rotation = $state(0);
   let yReverse = $derived(rotAxis == "y" ? !reverse : reverse);
-  let zReverse = $derived(rotAxis == "z" ? !reverse : reverse);
   let step = $derived(yReverse ? -2 : 2);
   let task = useTask(
     (delta) => {
@@ -57,167 +53,7 @@
       if (Math.abs(rotation) > degree90) {
         task.stop();
         rotation = 0;
-
-        if (zReverse)
-          [
-            ring[2][ringSides[rotAxis][0]],
-            ring[3][ringSides[rotAxis][0]],
-            ring[4][ringSides[rotAxis][0]],
-            ring[4][ringSides[rotAxis][3]],
-            ring[5][ringSides[rotAxis][3]],
-            ring[6][ringSides[rotAxis][3]],
-            ring[6][ringSides[rotAxis][2]],
-            ring[7][ringSides[rotAxis][2]],
-            ring[0][ringSides[rotAxis][2]],
-            ring[0][ringSides[rotAxis][1]],
-            ring[1][ringSides[rotAxis][1]],
-            ring[2][ringSides[rotAxis][1]],
-
-            ring[2][ringSides[rotAxis][4]],
-            ring[3][ringSides[rotAxis][4]],
-            ring[4][ringSides[rotAxis][4]],
-            ring[4][ringSides[rotAxis][4]],
-            ring[5][ringSides[rotAxis][4]],
-            ring[6][ringSides[rotAxis][4]],
-            ring[6][ringSides[rotAxis][4]],
-            ring[7][ringSides[rotAxis][4]],
-            ring[0][ringSides[rotAxis][4]],
-            ring[0][ringSides[rotAxis][4]],
-            ring[1][ringSides[rotAxis][4]],
-            ring[2][ringSides[rotAxis][4]],
-
-            ring[2][ringSides[rotAxis][5]],
-            ring[3][ringSides[rotAxis][5]],
-            ring[4][ringSides[rotAxis][5]],
-            ring[4][ringSides[rotAxis][5]],
-            ring[5][ringSides[rotAxis][5]],
-            ring[6][ringSides[rotAxis][5]],
-            ring[6][ringSides[rotAxis][5]],
-            ring[7][ringSides[rotAxis][5]],
-            ring[0][ringSides[rotAxis][5]],
-            ring[0][ringSides[rotAxis][5]],
-            ring[1][ringSides[rotAxis][5]],
-            ring[2][ringSides[rotAxis][5]],
-          ] = [
-            ring[0][ringSides[rotAxis][1]],
-            ring[1][ringSides[rotAxis][1]],
-            ring[2][ringSides[rotAxis][1]],
-            ring[2][ringSides[rotAxis][0]],
-            ring[3][ringSides[rotAxis][0]],
-            ring[4][ringSides[rotAxis][0]],
-            ring[4][ringSides[rotAxis][3]],
-            ring[5][ringSides[rotAxis][3]],
-            ring[6][ringSides[rotAxis][3]],
-            ring[6][ringSides[rotAxis][2]],
-            ring[7][ringSides[rotAxis][2]],
-            ring[0][ringSides[rotAxis][2]],
-
-            ring[0][ringSides[rotAxis][4]],
-            ring[1][ringSides[rotAxis][4]],
-            ring[2][ringSides[rotAxis][4]],
-            ring[2][ringSides[rotAxis][4]],
-            ring[3][ringSides[rotAxis][4]],
-            ring[4][ringSides[rotAxis][4]],
-            ring[4][ringSides[rotAxis][4]],
-            ring[5][ringSides[rotAxis][4]],
-            ring[6][ringSides[rotAxis][4]],
-            ring[6][ringSides[rotAxis][4]],
-            ring[7][ringSides[rotAxis][4]],
-            ring[0][ringSides[rotAxis][4]],
-
-            ring[0][ringSides[rotAxis][5]],
-            ring[1][ringSides[rotAxis][5]],
-            ring[2][ringSides[rotAxis][5]],
-            ring[2][ringSides[rotAxis][5]],
-            ring[3][ringSides[rotAxis][5]],
-            ring[4][ringSides[rotAxis][5]],
-            ring[4][ringSides[rotAxis][5]],
-            ring[5][ringSides[rotAxis][5]],
-            ring[6][ringSides[rotAxis][5]],
-            ring[6][ringSides[rotAxis][5]],
-            ring[7][ringSides[rotAxis][5]],
-            ring[0][ringSides[rotAxis][5]],
-          ];
-        else
-          [
-            ring[0][ringSides[rotAxis][1]],
-            ring[1][ringSides[rotAxis][1]],
-            ring[2][ringSides[rotAxis][1]],
-            ring[2][ringSides[rotAxis][0]],
-            ring[3][ringSides[rotAxis][0]],
-            ring[4][ringSides[rotAxis][0]],
-            ring[4][ringSides[rotAxis][3]],
-            ring[5][ringSides[rotAxis][3]],
-            ring[6][ringSides[rotAxis][3]],
-            ring[6][ringSides[rotAxis][2]],
-            ring[7][ringSides[rotAxis][2]],
-            ring[0][ringSides[rotAxis][2]],
-
-            ring[0][ringSides[rotAxis][4]],
-            ring[1][ringSides[rotAxis][4]],
-            ring[2][ringSides[rotAxis][4]],
-            ring[2][ringSides[rotAxis][4]],
-            ring[3][ringSides[rotAxis][4]],
-            ring[4][ringSides[rotAxis][4]],
-            ring[4][ringSides[rotAxis][4]],
-            ring[5][ringSides[rotAxis][4]],
-            ring[6][ringSides[rotAxis][4]],
-            ring[6][ringSides[rotAxis][4]],
-            ring[7][ringSides[rotAxis][4]],
-            ring[0][ringSides[rotAxis][4]],
-
-            ring[0][ringSides[rotAxis][5]],
-            ring[1][ringSides[rotAxis][5]],
-            ring[2][ringSides[rotAxis][5]],
-            ring[2][ringSides[rotAxis][5]],
-            ring[3][ringSides[rotAxis][5]],
-            ring[4][ringSides[rotAxis][5]],
-            ring[4][ringSides[rotAxis][5]],
-            ring[5][ringSides[rotAxis][5]],
-            ring[6][ringSides[rotAxis][5]],
-            ring[6][ringSides[rotAxis][5]],
-            ring[7][ringSides[rotAxis][5]],
-            ring[0][ringSides[rotAxis][5]],
-          ] = [
-            ring[2][ringSides[rotAxis][0]],
-            ring[3][ringSides[rotAxis][0]],
-            ring[4][ringSides[rotAxis][0]],
-            ring[4][ringSides[rotAxis][3]],
-            ring[5][ringSides[rotAxis][3]],
-            ring[6][ringSides[rotAxis][3]],
-            ring[6][ringSides[rotAxis][2]],
-            ring[7][ringSides[rotAxis][2]],
-            ring[0][ringSides[rotAxis][2]],
-            ring[0][ringSides[rotAxis][1]],
-            ring[1][ringSides[rotAxis][1]],
-            ring[2][ringSides[rotAxis][1]],
-
-            ring[2][ringSides[rotAxis][4]],
-            ring[3][ringSides[rotAxis][4]],
-            ring[4][ringSides[rotAxis][4]],
-            ring[4][ringSides[rotAxis][4]],
-            ring[5][ringSides[rotAxis][4]],
-            ring[6][ringSides[rotAxis][4]],
-            ring[6][ringSides[rotAxis][4]],
-            ring[7][ringSides[rotAxis][4]],
-            ring[0][ringSides[rotAxis][4]],
-            ring[0][ringSides[rotAxis][4]],
-            ring[1][ringSides[rotAxis][4]],
-            ring[2][ringSides[rotAxis][4]],
-
-            ring[2][ringSides[rotAxis][5]],
-            ring[3][ringSides[rotAxis][5]],
-            ring[4][ringSides[rotAxis][5]],
-            ring[4][ringSides[rotAxis][5]],
-            ring[5][ringSides[rotAxis][5]],
-            ring[6][ringSides[rotAxis][5]],
-            ring[6][ringSides[rotAxis][5]],
-            ring[7][ringSides[rotAxis][5]],
-            ring[0][ringSides[rotAxis][5]],
-            ring[0][ringSides[rotAxis][5]],
-            ring[1][ringSides[rotAxis][5]],
-            ring[2][ringSides[rotAxis][5]],
-          ];
+        rotateColoursInRing(ring, rotAxis, reverse);
       }
     },
     { autoStart: false }
@@ -234,7 +70,7 @@
   <!-- onchange={(e) => console.dir(e.target.object.position)} -->
 </T.PerspectiveCamera>
 
-<T.AmbientLight intensity={10} />
+<T.AmbientLight intensity={5} />
 
 {#if rotAxis == "x"}
   {#each positions as x}
@@ -253,7 +89,7 @@
     <T.Group rotation.y={y == whichAxis ? rotation : 0}>
       {#each positions as x}
         {#each positions as z}
-          <Cube position={[x, y, z]} {colors}  {ring} {debug} />
+          <Cube position={[x, y, z]} {colors} {ring} {debug} />
         {/each}
       {/each}
     </T.Group>
@@ -271,3 +107,8 @@
     </T.Group>
   {/each}
 {/if}
+
+<Environment
+  isBackground={false}
+  url={`${assetPath}/mpumalanga_veld_puresky_1k.hdr`}
+/>

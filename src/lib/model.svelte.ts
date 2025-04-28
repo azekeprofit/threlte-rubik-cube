@@ -10,7 +10,7 @@ export const COLORS = {
   green: "#0F0",
 };
 
-export type side='top'|'bottom'|'left'|'right'|'front'|'back';
+export type side = "top" | "bottom" | "left" | "right" | "front" | "back";
 
 export class CubeColor {
   x: coord;
@@ -46,7 +46,6 @@ export class CubeColor {
     // this.front = "green";
     // this.back = "blue";
   }
-
 }
 
 export const degree90 = Math.PI / 2;
@@ -55,3 +54,179 @@ export type rotationProps = {
   rotAxis: rotAxisType;
   reverse: boolean;
 };
+
+export const assetPath = `${import.meta.env.BASE_URL}/assets`;
+
+const ringSides: Record<rotAxisType, side[]> = {
+  x: ["front", "top", "back", "bottom", "left", "right"],
+  y: ["front", "left", "back", "right", "top", "bottom"],
+  z: ["right", "top", "left", "bottom", "front", "back"],
+};
+
+export function rotateColoursInRing(
+  ring: CubeColor[],
+  rotAxis: rotAxisType,
+  reverse: boolean
+) {
+  let zReverse = rotAxis == "z" ? !reverse : reverse;
+  if (zReverse)
+    [
+      ring[2][ringSides[rotAxis][0]],
+      ring[3][ringSides[rotAxis][0]],
+      ring[4][ringSides[rotAxis][0]],
+      ring[4][ringSides[rotAxis][3]],
+      ring[5][ringSides[rotAxis][3]],
+      ring[6][ringSides[rotAxis][3]],
+      ring[6][ringSides[rotAxis][2]],
+      ring[7][ringSides[rotAxis][2]],
+      ring[0][ringSides[rotAxis][2]],
+      ring[0][ringSides[rotAxis][1]],
+      ring[1][ringSides[rotAxis][1]],
+      ring[2][ringSides[rotAxis][1]],
+
+      ring[2][ringSides[rotAxis][4]],
+      ring[3][ringSides[rotAxis][4]],
+      ring[4][ringSides[rotAxis][4]],
+      ring[4][ringSides[rotAxis][4]],
+      ring[5][ringSides[rotAxis][4]],
+      ring[6][ringSides[rotAxis][4]],
+      ring[6][ringSides[rotAxis][4]],
+      ring[7][ringSides[rotAxis][4]],
+      ring[0][ringSides[rotAxis][4]],
+      ring[0][ringSides[rotAxis][4]],
+      ring[1][ringSides[rotAxis][4]],
+      ring[2][ringSides[rotAxis][4]],
+
+      ring[2][ringSides[rotAxis][5]],
+      ring[3][ringSides[rotAxis][5]],
+      ring[4][ringSides[rotAxis][5]],
+      ring[4][ringSides[rotAxis][5]],
+      ring[5][ringSides[rotAxis][5]],
+      ring[6][ringSides[rotAxis][5]],
+      ring[6][ringSides[rotAxis][5]],
+      ring[7][ringSides[rotAxis][5]],
+      ring[0][ringSides[rotAxis][5]],
+      ring[0][ringSides[rotAxis][5]],
+      ring[1][ringSides[rotAxis][5]],
+      ring[2][ringSides[rotAxis][5]],
+    ] = [
+      ring[0][ringSides[rotAxis][1]],
+      ring[1][ringSides[rotAxis][1]],
+      ring[2][ringSides[rotAxis][1]],
+      ring[2][ringSides[rotAxis][0]],
+      ring[3][ringSides[rotAxis][0]],
+      ring[4][ringSides[rotAxis][0]],
+      ring[4][ringSides[rotAxis][3]],
+      ring[5][ringSides[rotAxis][3]],
+      ring[6][ringSides[rotAxis][3]],
+      ring[6][ringSides[rotAxis][2]],
+      ring[7][ringSides[rotAxis][2]],
+      ring[0][ringSides[rotAxis][2]],
+
+      ring[0][ringSides[rotAxis][4]],
+      ring[1][ringSides[rotAxis][4]],
+      ring[2][ringSides[rotAxis][4]],
+      ring[2][ringSides[rotAxis][4]],
+      ring[3][ringSides[rotAxis][4]],
+      ring[4][ringSides[rotAxis][4]],
+      ring[4][ringSides[rotAxis][4]],
+      ring[5][ringSides[rotAxis][4]],
+      ring[6][ringSides[rotAxis][4]],
+      ring[6][ringSides[rotAxis][4]],
+      ring[7][ringSides[rotAxis][4]],
+      ring[0][ringSides[rotAxis][4]],
+
+      ring[0][ringSides[rotAxis][5]],
+      ring[1][ringSides[rotAxis][5]],
+      ring[2][ringSides[rotAxis][5]],
+      ring[2][ringSides[rotAxis][5]],
+      ring[3][ringSides[rotAxis][5]],
+      ring[4][ringSides[rotAxis][5]],
+      ring[4][ringSides[rotAxis][5]],
+      ring[5][ringSides[rotAxis][5]],
+      ring[6][ringSides[rotAxis][5]],
+      ring[6][ringSides[rotAxis][5]],
+      ring[7][ringSides[rotAxis][5]],
+      ring[0][ringSides[rotAxis][5]],
+    ];
+  else
+    [
+      ring[0][ringSides[rotAxis][1]],
+      ring[1][ringSides[rotAxis][1]],
+      ring[2][ringSides[rotAxis][1]],
+      ring[2][ringSides[rotAxis][0]],
+      ring[3][ringSides[rotAxis][0]],
+      ring[4][ringSides[rotAxis][0]],
+      ring[4][ringSides[rotAxis][3]],
+      ring[5][ringSides[rotAxis][3]],
+      ring[6][ringSides[rotAxis][3]],
+      ring[6][ringSides[rotAxis][2]],
+      ring[7][ringSides[rotAxis][2]],
+      ring[0][ringSides[rotAxis][2]],
+
+      ring[0][ringSides[rotAxis][4]],
+      ring[1][ringSides[rotAxis][4]],
+      ring[2][ringSides[rotAxis][4]],
+      ring[2][ringSides[rotAxis][4]],
+      ring[3][ringSides[rotAxis][4]],
+      ring[4][ringSides[rotAxis][4]],
+      ring[4][ringSides[rotAxis][4]],
+      ring[5][ringSides[rotAxis][4]],
+      ring[6][ringSides[rotAxis][4]],
+      ring[6][ringSides[rotAxis][4]],
+      ring[7][ringSides[rotAxis][4]],
+      ring[0][ringSides[rotAxis][4]],
+
+      ring[0][ringSides[rotAxis][5]],
+      ring[1][ringSides[rotAxis][5]],
+      ring[2][ringSides[rotAxis][5]],
+      ring[2][ringSides[rotAxis][5]],
+      ring[3][ringSides[rotAxis][5]],
+      ring[4][ringSides[rotAxis][5]],
+      ring[4][ringSides[rotAxis][5]],
+      ring[5][ringSides[rotAxis][5]],
+      ring[6][ringSides[rotAxis][5]],
+      ring[6][ringSides[rotAxis][5]],
+      ring[7][ringSides[rotAxis][5]],
+      ring[0][ringSides[rotAxis][5]],
+    ] = [
+      ring[2][ringSides[rotAxis][0]],
+      ring[3][ringSides[rotAxis][0]],
+      ring[4][ringSides[rotAxis][0]],
+      ring[4][ringSides[rotAxis][3]],
+      ring[5][ringSides[rotAxis][3]],
+      ring[6][ringSides[rotAxis][3]],
+      ring[6][ringSides[rotAxis][2]],
+      ring[7][ringSides[rotAxis][2]],
+      ring[0][ringSides[rotAxis][2]],
+      ring[0][ringSides[rotAxis][1]],
+      ring[1][ringSides[rotAxis][1]],
+      ring[2][ringSides[rotAxis][1]],
+
+      ring[2][ringSides[rotAxis][4]],
+      ring[3][ringSides[rotAxis][4]],
+      ring[4][ringSides[rotAxis][4]],
+      ring[4][ringSides[rotAxis][4]],
+      ring[5][ringSides[rotAxis][4]],
+      ring[6][ringSides[rotAxis][4]],
+      ring[6][ringSides[rotAxis][4]],
+      ring[7][ringSides[rotAxis][4]],
+      ring[0][ringSides[rotAxis][4]],
+      ring[0][ringSides[rotAxis][4]],
+      ring[1][ringSides[rotAxis][4]],
+      ring[2][ringSides[rotAxis][4]],
+
+      ring[2][ringSides[rotAxis][5]],
+      ring[3][ringSides[rotAxis][5]],
+      ring[4][ringSides[rotAxis][5]],
+      ring[4][ringSides[rotAxis][5]],
+      ring[5][ringSides[rotAxis][5]],
+      ring[6][ringSides[rotAxis][5]],
+      ring[6][ringSides[rotAxis][5]],
+      ring[7][ringSides[rotAxis][5]],
+      ring[0][ringSides[rotAxis][5]],
+      ring[0][ringSides[rotAxis][5]],
+      ring[1][ringSides[rotAxis][5]],
+      ring[2][ringSides[rotAxis][5]],
+    ];
+}

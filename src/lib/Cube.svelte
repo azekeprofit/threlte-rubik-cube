@@ -38,14 +38,14 @@
 </script>
 
 {#await useTexture(texturePath) then texture}
-  <T.Mesh position={sPos}>
+  <T.Mesh {position}>
     <T.BoxGeometry args={[1,1,1]} />
-    <T.MeshBasicMaterial map={texture} color={c.right} {attach} />
-    <T.MeshBasicMaterial map={texture} color={c.left} {attach}  />
-    <T.MeshBasicMaterial map={texture} color={c.bottom} {attach}  />
-    <T.MeshBasicMaterial map={texture} color={c.top} {attach}  />
-    <T.MeshBasicMaterial map={texture} color={c.front} {attach}  />
-    <T.MeshBasicMaterial map={texture} color={c.back} {attach}  />
+    <T.MeshStandardMaterial metalness={0.5} roughness={0}  map={texture} color={c.right} {attach} />
+    <T.MeshStandardMaterial metalness={0.5} roughness={0}  map={texture} color={c.left} {attach}  />
+    <T.MeshStandardMaterial metalness={0.5} roughness={0}  map={texture} color={c.bottom} {attach}  />
+    <T.MeshStandardMaterial metalness={0.5} roughness={0}  map={texture} color={c.top} {attach}  />
+    <T.MeshStandardMaterial metalness={0.5} roughness={0}  map={texture} color={c.front} {attach}  />
+    <T.MeshStandardMaterial metalness={0.5} roughness={0}  map={texture} color={c.back} {attach}  />
     <Edges color="black" thickness={1} />
   </T.Mesh>
 {/await}
