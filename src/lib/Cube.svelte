@@ -1,9 +1,9 @@
 <script lang="ts">
   type vector3 = [coord, coord, coord];
-  import { T } from "@threlte/core";
+  import { T, useTask } from "@threlte/core";
   import { Edges, useTexture } from "@threlte/extras";
   import type { SvelteMap } from "svelte/reactivity";
-  import { COLORS, CubeColor, type coord } from "./model.svelte";
+  import { COLORS, CubeColor, type colorKey, type coord } from "./model.svelte";
 
   const {
     position,
@@ -36,17 +36,64 @@
   let texturePath = $derived(
     `${import.meta.env.BASE_URL}/assets/${debug ? index : -1}.png`
   );
+
+  let timer = $state(0);
+  useTask((delta) => {
+    if (index != -1) timer += delta;
+    else timer = 0;
+  });
+
+  function hsl(c: colorKey) {
+    const [h, s, l] = COLORS[c];
+    return `hsl(${h},${s}%,${l - 20 - ((timer * 15) % 10)}%)`;
+  }
 </script>
 
 {#await useTexture(texturePath) then texture}
   <T.Mesh {position}>
     <T.BoxGeometry args={[1, 1, 1]} />
-    <T.MeshStandardMaterial metalness={0.5} roughness={0}  map={texture} color={COLORS[c.right]} {attach} />
-    <T.MeshStandardMaterial metalness={0.5} roughness={0}  map={texture} color={COLORS[c.left]} {attach}  />
-    <T.MeshStandardMaterial metalness={0.5} roughness={0}  map={texture} color={COLORS[c.bottom]} {attach}  />
-    <T.MeshStandardMaterial metalness={0.5} roughness={0}  map={texture} color={COLORS[c.top]} {attach}  />
-    <T.MeshStandardMaterial metalness={0.5} roughness={0}  map={texture} color={COLORS[c.front]} {attach}  />
-    <T.MeshStandardMaterial metalness={0.5} roughness={0}  map={texture} color={COLORS[c.back]} {attach}  />
+    <T.MeshStandardMaterial
+      metalness={0.5}
+      roughness={0}
+      map={texture}
+      color={hsl(c.right)}
+      {attach}
+    />
+    <T.MeshStandardMaterial
+      metalness={0.5}
+      roughness={0}
+      map={texture}
+      color={hsl(c.left)}
+      {attach}
+    />
+    <T.MeshStandardMaterial
+      metalness={0.5}
+      roughness={0}
+      map={texture}
+      color={hsl(c.bottom)}
+      {attach}
+    />
+    <T.MeshStandardMaterial
+      metalness={0.5}
+      roughness={0}
+      map={texture}
+      color={hsl(c.top)}
+      {attach}
+    />
+    <T.MeshStandardMaterial
+      metalness={0.5}
+      roughness={0}
+      map={texture}
+      color={hsl(c.front)}
+      {attach}
+    />
+    <T.MeshStandardMaterial
+      metalness={0.5}
+      roughness={0}
+      map={texture}
+      color={hsl(c.back)}
+      {attach}
+    />
     <Edges color="black" />
   </T.Mesh>
 {/await}

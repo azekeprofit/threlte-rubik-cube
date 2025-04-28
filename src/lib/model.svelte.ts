@@ -2,14 +2,14 @@ export const positions = [-1, 0, 1] as const;
 export type coord = (typeof positions)[number];
 export type rotAxisType = "x" | "y" | "z";
 export const COLORS = {
-  white: "#FFFFFF",
-  yellow: "#FF0",
-  red: "#F00",
-  orange: "#C60",
-  blue: "#00F",
-  green: "#0F0",
+  white: [0, 0, 100],
+  yellow: [60, 100, 50],
+  red: [0, 100, 50],
+  orange: [30, 100, 70],
+  blue: [240, 100, 50],
+  green: [120, 100, 50],
 };
-type colorKey = keyof typeof COLORS;
+export type colorKey = keyof typeof COLORS;
 
 export type side = "top" | "bottom" | "left" | "right" | "front" | "back";
 
@@ -33,8 +33,12 @@ export class CubeColor {
       0: "white",
       1: "white",
     }[y] as colorKey;
-    this.left = this.right = { [-1]: "green", 0: "white", 1: "blue" }[x] as colorKey;
-    this.front = this.back = { [-1]: "orange", 0: "white", 1: "red" }[z] as colorKey;
+    this.left = this.right = { [-1]: "green", 0: "white", 1: "blue" }[
+      x
+    ] as colorKey;
+    this.front = this.back = { [-1]: "orange", 0: "white", 1: "red" }[
+      z
+    ] as colorKey;
 
     // this.top = "red";
     // this.bottom = "maroon";
