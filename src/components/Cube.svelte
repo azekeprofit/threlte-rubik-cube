@@ -1,6 +1,6 @@
 <script lang="ts">
   type vector3 = [coord, coord, coord];
-  import { T, useTask } from "@threlte/core";
+  import { T } from "@threlte/core";
   import { Edges, useTexture } from "@threlte/extras";
   import type { SvelteMap } from "svelte/reactivity";
   import {
@@ -16,13 +16,13 @@
     colors,
     ring,
     debug,
-    pulse
+    pulse,
   }: {
     position: vector3;
     colors: SvelteMap<string, CubeColor>;
     ring: CubeColor[];
     debug: boolean;
-    pulse:Pulse;
+    pulse: Pulse;
   } = $props();
 
   let [x, y, z] = position;
@@ -47,7 +47,7 @@
 
   function hsl(c: colorKey) {
     const [h, s, l] = COLORS[c];
-    return `hsl(${h},${s}%,${index==-1?l:l - pulse.value}%)`;
+    return `hsl(${h},${s}%,${index == -1 ? l : l - pulse.value}%)`;
   }
 </script>
 

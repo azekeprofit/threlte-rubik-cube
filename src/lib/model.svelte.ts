@@ -39,17 +39,9 @@ export class CubeColor {
     this.front = this.back = { [-1]: "orange", 0: "white", 1: "red" }[
       z
     ] as colorKey;
-
-    // this.top = "red";
-    // this.bottom = "maroon";
-    // this.left = "cyan";
-    // this.right = "purple";
-    // this.front = "green";
-    // this.back = "blue";
   }
 }
 
-export const degree90 = Math.PI / 2;
 export type rotationProps = {
   whichAxis: (typeof positions)[number];
   rotAxis: rotAxisType;
