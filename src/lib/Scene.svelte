@@ -234,14 +234,14 @@
   <!-- onchange={(e) => console.dir(e.target.object.position)} -->
 </T.PerspectiveCamera>
 
-<T.AmbientLight intensity={5} />
+<T.AmbientLight intensity={10} />
 
 {#if rotAxis == "x"}
   {#each positions as x}
     <T.Group rotation.x={x == whichAxis ? rotation : 0}>
       {#each positions as y}
         {#each positions as z}
-          <Cube position={[x, y, z]} {colors} ring={debug ? ring : []} />
+          <Cube position={[x, y, z]} {colors} {ring} {debug} />
         {/each}
       {/each}
     </T.Group>
@@ -253,7 +253,7 @@
     <T.Group rotation.y={y == whichAxis ? rotation : 0}>
       {#each positions as x}
         {#each positions as z}
-          <Cube position={[x, y, z]} {colors} ring={debug ? ring : []} />
+          <Cube position={[x, y, z]} {colors}  {ring} {debug} />
         {/each}
       {/each}
     </T.Group>
@@ -265,7 +265,7 @@
     <T.Group rotation.z={z == whichAxis ? rotation : 0}>
       {#each positions as x}
         {#each positions as y}
-          <Cube position={[x, y, z]} {colors} ring={debug ? ring : []} />
+          <Cube position={[x, y, z]} {colors} {ring} {debug} />
         {/each}
       {/each}
     </T.Group>

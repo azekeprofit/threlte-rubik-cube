@@ -9,10 +9,12 @@
     position,
     colors,
     ring,
+    debug,
   }: {
     position: vector3;
     colors: SvelteMap<string, CubeColor>;
     ring: CubeColor[];
+    debug: boolean;
   } = $props();
 
   let [x, y, z] = position;
@@ -30,18 +32,20 @@
     else parent.material = [ref];
   }
 
-  const base=import.meta.env.BASE_URL;
+  let index=$derived(ring.indexOf(c));
+  let texturePath=$derived(`${import.meta.env.BASE_URL}/assets/${debug?index:-1}.png`);
+  let sPos=$derived(index==-1?position:[x*1.02,y*1.02,z*1.02] as vector3);
 </script>
 
-{#await useTexture(`${base}/assets/${ring.indexOf(c)}.png`) then texture}
-  <T.Mesh {position}>
-    <T.BoxGeometry args={[1, 1, 1]} />
-    <T.MeshToonMaterial map={texture} color={c.right} {attach} reflectivity={20} />
-    <T.MeshToonMaterial map={texture} color={c.left} {attach} reflectivity={20} />
-    <T.MeshToonMaterial map={texture} color={c.bottom} {attach} reflectivity={20} />
-    <T.MeshToonMaterial map={texture} color={c.top} {attach}  reflectivity={20}/>
-    <T.MeshToonMaterial map={texture} color={c.front} {attach} reflectivity={2} />
-    <T.MeshToonMaterial map={texture} color={c.back} {attach}  reflectivity={20} />
+{#await useTexture(texturePath) then texture}
+  <T.Mesh position={sPos}>
+    <T.BoxGeometry args={[1,1,1]} />
+    <T.MeshBasicMaterial map={texture} color={c.right} {attach} />
+    <T.MeshBasicMaterial map={texture} color={c.left} {attach}  />
+    <T.MeshBasicMaterial map={texture} color={c.bottom} {attach}  />
+    <T.MeshBasicMaterial map={texture} color={c.top} {attach}  />
+    <T.MeshBasicMaterial map={texture} color={c.front} {attach}  />
+    <T.MeshBasicMaterial map={texture} color={c.back} {attach}  />
     <Edges color="black" thickness={1} />
   </T.Mesh>
 {/await}
