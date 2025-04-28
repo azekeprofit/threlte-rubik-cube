@@ -36,12 +36,12 @@
 {#await useTexture(`${base}/assets/${ring.indexOf(c)}.png`) then texture}
   <T.Mesh {position}>
     <T.BoxGeometry args={[1, 1, 1]} />
-    <T.MeshBasicMaterial map={texture} color={c.right} {attach} />
-    <T.MeshBasicMaterial map={texture} color={c.left} {attach} />
-    <T.MeshBasicMaterial map={texture} color={c.bottom} {attach} />
-    <T.MeshBasicMaterial map={texture} color={c.top} {attach} />
-    <T.MeshBasicMaterial map={texture} color={c.front} {attach} />
-    <T.MeshBasicMaterial map={texture} color={c.back} {attach} />
+    <T.MeshToonMaterial map={texture} color={c.right} {attach} reflectivity={20} />
+    <T.MeshToonMaterial map={texture} color={c.left} {attach} reflectivity={20} />
+    <T.MeshToonMaterial map={texture} color={c.bottom} {attach} reflectivity={20} />
+    <T.MeshToonMaterial map={texture} color={c.top} {attach}  reflectivity={20}/>
+    <T.MeshToonMaterial map={texture} color={c.front} {attach} reflectivity={2} />
+    <T.MeshToonMaterial map={texture} color={c.back} {attach}  reflectivity={20} />
     <Edges color="black" thickness={1} />
   </T.Mesh>
 {/await}

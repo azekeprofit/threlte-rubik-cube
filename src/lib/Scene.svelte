@@ -36,7 +36,16 @@
   import Cube from "./Cube.svelte";
   let colors = new SvelteMap<string, CubeColor>();
 
-  let ring = $state<CubeColor[]>([]);
+  let ring = $derived.by(() => {
+    let ring = [];
+    let i = 0;
+    for (let c of colors.values()) {
+      if (c[rotAxis] == whichAxis) {
+        ring[ringOrder[i++]] = c;
+      }
+    }
+    return ring;
+  });
 
   let rotation = $state(0);
   let yReverse = $derived(rotAxis == "y" ? !reverse : reverse);
@@ -48,13 +57,6 @@
       if (Math.abs(rotation) > degree90) {
         task.stop();
         rotation = 0;
-        ring = [];
-        let i = 0;
-        for (let c of colors.values()) {
-          if (c[rotAxis] == whichAxis) {
-            ring[ringOrder[i++]] = c;
-          }
-        }
 
         if (zReverse)
           [
@@ -231,6 +233,8 @@
   <OrbitControls></OrbitControls>
   <!-- onchange={(e) => console.dir(e.target.object.position)} -->
 </T.PerspectiveCamera>
+
+<T.AmbientLight intensity={5} />
 
 {#if rotAxis == "x"}
   {#each positions as x}
