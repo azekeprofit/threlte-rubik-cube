@@ -57,12 +57,9 @@
 
 {#await useTexture(texturePath) then texture}
   <T.Mesh {name} {position}
-  onpointerenter={(e: IntersectionEvent<MouseEvent>) => {
+  onclick={(e: IntersectionEvent<MouseEvent>) => {
     e.stopPropagation();
     setHover(c);
-  }}>
-  onpointerleave={(e: IntersectionEvent<MouseEvent>) => {
-    setHover(null);
   }}>
     <T.BoxGeometry args={[.95, .95, .95]} />
     {#each c.drawingOrder() as color}
