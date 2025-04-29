@@ -9,19 +9,11 @@
   let debug=$state(false);
 
   let start:()=>void=$state(null!);
-
-  let vx=$state(0)
-  let vy=$state(0)
-
-  function setPoint(x:number,y:number){
-    vx=x;
-    vy=y;
-  }
 </script>
 
-<div style="width:500px;height:400px;border:1px solid black;display:inline-block;">
+<div style="width:500px;height:400px;border:1px solid black;display:inline-block">
   <Canvas>
-    <Scene {whichAxis} {rotAxis} {reverse} {debug} bind:start {setPoint} />
+    <Scene {whichAxis} {rotAxis} {reverse} {debug} bind:start />
   </Canvas>
 </div>
 <div style="height:400px;display: inline-block;vertical-align:middle">
@@ -91,9 +83,5 @@
   {#if start!=null}
   <button onclick={start}>start/stop</button>
   {/if}
-</div>
-<div>
-  x: {vx}
-  y: {vy}
 </div>
 </div>

@@ -4,6 +4,7 @@
   import { Edges, useTexture, type IntersectionEvent } from "@threlte/extras";
   import type { SvelteMap } from "svelte/reactivity";
   import {
+  assetPath,
     COLORS,
     CubeColor,
     type colorKey,
@@ -17,14 +18,14 @@
     ring,
     debug,
     pulse,
-    hovered,
+    setHover,
   }: {
     position: vector3;
     colors: SvelteMap<string, CubeColor>;
     ring: CubeColor[];
     debug: boolean;
     pulse: Pulse;
-    hovered: string;
+    setHover: (c: CubeColor|null) => void;
   } = $props();
 
   let [x, y, z] = position;
@@ -44,22 +45,27 @@
 
   let index = $derived(ring.indexOf(c));
   let texturePath = $derived(
-    `${import.meta.env.BASE_URL}/assets/${debug ? index : -1}.png`
+    `${assetPath}/${debug ? index : -1}.png`
   );
 
   function hsl(k: colorKey) {
     if (k == "none") return "";
-    if (hovered === name) return "pink";
     const [h, s, l] = COLORS[k];
     return `hsl(${h},${s}%,${index != -1 ? l - pulse.value : l}%)`;
   }
 </script>
 
 {#await useTexture(texturePath) then texture}
-  <T.Mesh {name} {position}>
-    <T.BoxGeometry args={[1, 1, 1]} />
-    <T.MeshBasicMaterial color={hovered===name?'blue':'red'} />
-    <!-- {#each c.drawingOrder() as color}
+  <T.Mesh {name} {position}
+  onpointerenter={(e: IntersectionEvent<MouseEvent>) => {
+    e.stopPropagation();
+    setHover(c);
+  }}>
+  onpointerleave={(e: IntersectionEvent<MouseEvent>) => {
+    setHover(null);
+  }}>
+    <T.BoxGeometry args={[.95, .95, .95]} />
+    {#each c.drawingOrder() as color}
       {#if color != "none"}
         <T.MeshStandardMaterial
           metalness={0.5}
@@ -68,11 +74,9 @@
           color={hsl(color)}
           {attach}
         />
-      {/if}
-      {#if color == "none"}
+      {:else}
         <T.MeshBasicMaterial visible={false} {attach} />
-      {/if
-    {/each}} 
-    <Edges color="black" />-->
+      {/if}
+    {/each}
   </T.Mesh>
 {/await}

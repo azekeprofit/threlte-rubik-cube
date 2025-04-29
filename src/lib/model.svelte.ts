@@ -5,7 +5,7 @@ export const COLORS = {
   white: [0, 0, 100],
   yellow: [60, 100, 50],
   red: [0, 100, 50],
-  orange: [30, 100, 70],
+  orange: [40, 100, 50],
   blue: [240, 100, 50],
   green: [120, 100, 50],
   none: [0, 0, 0],
