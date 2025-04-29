@@ -11,7 +11,7 @@
   let start:()=>void=$state(null!);
 </script>
 
-<div style="width:500px;height:400px;border:1px solid black;display:inline-block">
+<div style="width:500px;height:400px;border:1px solid black;display:block;position:absolute;left:0;top:0">
   <Canvas>
     <Scene {whichAxis} {rotAxis} {reverse} {debug} bind:start />
   </Canvas>

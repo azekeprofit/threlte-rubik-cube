@@ -1,12 +1,7 @@
 <script lang="ts">
   type vector3 = [coord, coord, coord];
   import { T } from "@threlte/core";
-  import {
-    Edges,
-    useTexture,
-    type IntersectionEvent
-
-  } from "@threlte/extras";
+  import { Edges, useTexture, type IntersectionEvent } from "@threlte/extras";
   import type { SvelteMap } from "svelte/reactivity";
   import {
     COLORS,
@@ -23,7 +18,7 @@
     debug,
     pulse,
     hovered,
-    setHover
+    setHover,
   }: {
     position: vector3;
     colors: SvelteMap<string, CubeColor>;
@@ -65,22 +60,25 @@
 {#await useTexture(texturePath) then texture}
   <T.Mesh {name} {position}
   
-  onpointerover={(e:IntersectionEvent<MouseEvent>) => {
+  onpointerover={(e: IntersectionEvent<MouseEvent>) => {
     e.stopPropagation();
     console.dir(e);
     setHover(c);
-  }}
-  >
+  }}>
     <T.BoxGeometry args={[1, 1, 1]} />
     {#each c.drawingOrder() as color}
-      <T.MeshStandardMaterial
-        metalness={0.5}
-        roughness={0}
-        map={texture}
-        visible={color != "none"}
-        color={hsl(color)}
-        {attach}
-      />
+      {#if color != "none"}
+        <T.MeshStandardMaterial
+          metalness={0.5}
+          roughness={0}
+          map={texture}
+          color={hsl(color)}
+          {attach}
+        />
+      {/if}
+      {#if color == "none"}
+        <T.MeshBasicMaterial visible={false} {attach} />
+      {/if}
     {/each}
     <Edges color="black" />
   </T.Mesh>

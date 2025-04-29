@@ -64,7 +64,7 @@
   interactivity({
     filter: (hits, state) => {
       // Only return the first hit
-      return hits.slice(0, 1)
+    return hits.slice(0, 1)
     }
   })
 </script>
