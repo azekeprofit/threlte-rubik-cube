@@ -28,9 +28,11 @@
     reverse,
     debug,
     start = $bindable(),
+    setPoint,
   }: rotationProps & {
     start: () => void;
     debug: boolean;
+    setPoint:(x:number,y:number)=>void
   } = $props();
 
   let colors = new SvelteMap<string, CubeColor>();
@@ -105,8 +107,9 @@
       let y = (e.clientY - rect.top) / rect.height;
       let vx=2*x-1;
       let vy=1-2*y;
-      let v = new Vector2(vx*2.5, vy*2.5);
+      let v = new Vector2(vx, vy);
       pickHelper.pick(v);
+      setPoint(vx,vy)
       // console.dir(v);
     },
     false
