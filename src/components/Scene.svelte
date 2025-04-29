@@ -61,9 +61,12 @@
     hovered=c;
   }
 
-  interactivity({target:document.documentElement
-  });
-
+  interactivity({
+    filter: (hits, state) => {
+      // Only return the first hit
+      return hits.slice(0, 1)
+    }
+  })
 </script>
 
 <T.PerspectiveCamera makeDefault position={[x, y, z]}>

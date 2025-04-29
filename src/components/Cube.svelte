@@ -1,7 +1,12 @@
 <script lang="ts">
   type vector3 = [coord, coord, coord];
   import { T } from "@threlte/core";
-  import { Edges, useCursor, useTexture, type IntersectionEvent } from "@threlte/extras";
+  import {
+    Edges,
+    useTexture,
+    type IntersectionEvent
+
+  } from "@threlte/extras";
   import type { SvelteMap } from "svelte/reactivity";
   import {
     COLORS,
@@ -18,7 +23,7 @@
     debug,
     pulse,
     hovered,
-    setHover,
+    setHover
   }: {
     position: vector3;
     colors: SvelteMap<string, CubeColor>;
@@ -30,13 +35,13 @@
   } = $props();
 
   let [x, y, z] = position;
-  const posKey = JSON.stringify(position);
+  const name = JSON.stringify(position);
 
-  if (!colors.has(posKey)) {
-    colors.set(posKey, new CubeColor(x, y, z));
+  if (!colors.has(name)) {
+    colors.set(name, new CubeColor(x, y, z));
   }
 
-  let c = colors.get(posKey)!;
+  let c = colors.get(name)!;
 
   function attach({ parent, ref }: { parent: any; ref: any }) {
     if (Array.isArray(parent.material))
@@ -50,6 +55,7 @@
   );
 
   function hsl(k: colorKey) {
+    if (k == "none") return "";
     if (hovered === c) return "pink";
     const [h, s, l] = COLORS[k];
     return `hsl(${h},${s}%,${index != -1 ? l - pulse.value : l}%)`;
@@ -57,61 +63,25 @@
 </script>
 
 {#await useTexture(texturePath) then texture}
-  <T.Mesh
-    name={posKey}
-    {position}
-    onpointerover={(e:IntersectionEvent<MouseEvent>) => {
-      e.stopPropagation();
-      console.dir(e);
-      setHover(c);
-    }}
-   onpointerout={(e:IntersectionEvent<MouseEvent>)=>{
+  <T.Mesh {name} {position}
+  
+  onpointerover={(e:IntersectionEvent<MouseEvent>) => {
     e.stopPropagation();
-   }}
+    console.dir(e);
+    setHover(c);
+  }}
   >
     <T.BoxGeometry args={[1, 1, 1]} />
-    <T.MeshStandardMaterial
-      metalness={0.5}
-      roughness={0}
-      map={texture}
-      color={hsl(c.right)}
-      {attach}
-    />
-    <T.MeshStandardMaterial
-      metalness={0.5}
-      roughness={0}
-      map={texture}
-      color={hsl(c.left)}
-      {attach}
-    />
-    <T.MeshStandardMaterial
-      metalness={0.5}
-      roughness={0}
-      map={texture}
-      color={hsl(c.bottom)}
-      {attach}
-    />
-    <T.MeshStandardMaterial
-      metalness={0.5}
-      roughness={0}
-      map={texture}
-      color={hsl(c.top)}
-      {attach}
-    />
-    <T.MeshStandardMaterial
-      metalness={0.5}
-      roughness={0}
-      map={texture}
-      color={hsl(c.front)}
-      {attach}
-    />
-    <T.MeshStandardMaterial
-      metalness={0.5}
-      roughness={0}
-      map={texture}
-      color={hsl(c.back)}
-      {attach}
-    />
+    {#each c.drawingOrder() as color}
+      <T.MeshStandardMaterial
+        metalness={0.5}
+        roughness={0}
+        map={texture}
+        visible={color != "none"}
+        color={hsl(color)}
+        {attach}
+      />
+    {/each}
     <Edges color="black" />
   </T.Mesh>
 {/await}

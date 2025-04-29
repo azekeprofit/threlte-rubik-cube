@@ -8,6 +8,7 @@ export const COLORS = {
   orange: [30, 100, 70],
   blue: [240, 100, 50],
   green: [120, 100, 50],
+  none: [0, 0, 0],
 };
 export type colorKey = keyof typeof COLORS;
 
@@ -17,28 +18,35 @@ export class CubeColor {
   x: coord;
   y: coord;
   z: coord;
-  top = $state<colorKey>("white");
-  bottom = $state<colorKey>("white");
-  left = $state<colorKey>("white");
-  right = $state<colorKey>("white");
-  front = $state<colorKey>("white");
-  back = $state<colorKey>("white");
+  top = $state<colorKey>("none");
+  bottom = $state<colorKey>("none");
+  left = $state<colorKey>("none");
+  right = $state<colorKey>("none");
+  front = $state<colorKey>("none");
+  back = $state<colorKey>("none");
 
   constructor(x: coord, y: coord, z: coord) {
     this.x = x;
     this.y = y;
     this.z = z;
-    this.top = this.bottom = {
-      [-1]: "yellow",
-      0: "white",
-      1: "white",
-    }[y] as colorKey;
-    this.left = this.right = { [-1]: "green", 0: "white", 1: "blue" }[
-      x
-    ] as colorKey;
-    this.front = this.back = { [-1]: "orange", 0: "white", 1: "red" }[
-      z
-    ] as colorKey;
+
+    this.bottom = y == 1 ? "white" : "none";
+    this.top = y == -1 ? "yellow" : "none";
+    this.right = x == 1 ? "blue" : "none";
+    this.left = x == -1 ? "green" : "none";
+    this.front = z == 1 ? "red" : "none";
+    this.back = z == -1 ? "orange" : "none";
+  }
+
+  drawingOrder() {
+    return [
+      this.right,
+      this.left,
+      this.bottom,
+      this.top,
+      this.front,
+      this.back,
+    ];
   }
 }
 
