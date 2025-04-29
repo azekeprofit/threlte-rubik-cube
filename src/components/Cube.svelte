@@ -1,7 +1,7 @@
 <script lang="ts">
   type vector3 = [coord, coord, coord];
   import { T } from "@threlte/core";
-  import { Edges, useTexture } from "@threlte/extras";
+  import { Edges, useCursor, useTexture, type IntersectionEvent } from "@threlte/extras";
   import type { SvelteMap } from "svelte/reactivity";
   import {
     COLORS,
@@ -11,18 +11,22 @@
   } from "../lib/model.svelte";
   import { Pulse } from "../reactive/pulse.svelte";
 
-  const {
+  let {
     position,
     colors,
     ring,
     debug,
     pulse,
+    hovered,
+    setHover,
   }: {
     position: vector3;
     colors: SvelteMap<string, CubeColor>;
     ring: CubeColor[];
     debug: boolean;
     pulse: Pulse;
+    hovered: CubeColor | null;
+    setHover: (c: CubeColor) => void;
   } = $props();
 
   let [x, y, z] = position;
@@ -45,14 +49,26 @@
     `${import.meta.env.BASE_URL}/assets/${debug ? index : -1}.png`
   );
 
-  function hsl(c: colorKey) {
-    const [h, s, l] = COLORS[c];
-    return `hsl(${h},${s}%,${index == -1 ? l : l - pulse.value}%)`;
+  function hsl(k: colorKey) {
+    if (hovered === c) return "pink";
+    const [h, s, l] = COLORS[k];
+    return `hsl(${h},${s}%,${index != -1 ? l - pulse.value : l}%)`;
   }
 </script>
 
 {#await useTexture(texturePath) then texture}
-  <T.Mesh {position}>
+  <T.Mesh
+    name={posKey}
+    {position}
+    onpointerover={(e:IntersectionEvent<MouseEvent>) => {
+      e.stopPropagation();
+      console.dir(e);
+      setHover(c);
+    }}
+   onpointerout={(e:IntersectionEvent<MouseEvent>)=>{
+    e.stopPropagation();
+   }}
+  >
     <T.BoxGeometry args={[1, 1, 1]} />
     <T.MeshStandardMaterial
       metalness={0.5}

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { T } from "@threlte/core";
-  import { Environment, OrbitControls } from "@threlte/extras";
+  import { Environment, interactivity, OrbitControls } from "@threlte/extras";
   import { expoOut } from "svelte/easing";
   import { Tween } from "svelte/motion";
   import { SvelteMap } from "svelte/reactivity";
@@ -32,7 +32,6 @@
     debug: boolean;
   } = $props();
 
-
   let colors = new SvelteMap<string, CubeColor>();
 
   let ring = $derived.by(() => {
@@ -57,6 +56,14 @@
   };
 
   let pulse = new Pulse(0, 15, 30);
+  let hovered = $state<CubeColor | null>(null);
+  function setHover(c:CubeColor){
+    hovered=c;
+  }
+
+  interactivity({target:document.documentElement
+  });
+
 </script>
 
 <T.PerspectiveCamera makeDefault position={[x, y, z]}>
@@ -71,7 +78,7 @@
     <T.Group rotation.x={x == whichAxis ? angle.current : 0}>
       {#each positions as y}
         {#each positions as z}
-          <Cube position={[x, y, z]} {colors} {ring} {debug} {pulse} />
+          <Cube position={[x, y, z]} {colors} {ring} {debug} {pulse} {hovered} {setHover}/>
         {/each}
       {/each}
     </T.Group>
@@ -83,7 +90,7 @@
     <T.Group rotation.y={y == whichAxis ? angle.current : 0}>
       {#each positions as x}
         {#each positions as z}
-          <Cube position={[x, y, z]} {colors} {ring} {debug} {pulse} />
+          <Cube position={[x, y, z]} {colors} {ring} {debug} {pulse}{hovered} {setHover}/>
         {/each}
       {/each}
     </T.Group>
@@ -95,7 +102,7 @@
     <T.Group rotation.z={z == whichAxis ? angle.current : 0}>
       {#each positions as x}
         {#each positions as y}
-          <Cube position={[x, y, z]} {colors} {ring} {debug} {pulse} />
+          <Cube position={[x, y, z]} {colors} {ring} {debug} {pulse} {hovered}  {setHover}/>
         {/each}
       {/each}
     </T.Group>
