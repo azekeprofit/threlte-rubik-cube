@@ -18,15 +18,13 @@
     debug,
     pulse,
     hovered,
-    setHover,
   }: {
     position: vector3;
     colors: SvelteMap<string, CubeColor>;
     ring: CubeColor[];
     debug: boolean;
     pulse: Pulse;
-    hovered: CubeColor | null;
-    setHover: (c: CubeColor) => void;
+    hovered: string;
   } = $props();
 
   let [x, y, z] = position;
@@ -51,20 +49,14 @@
 
   function hsl(k: colorKey) {
     if (k == "none") return "";
-    if (hovered === c) return "pink";
+    if (hovered === name) return "pink";
     const [h, s, l] = COLORS[k];
     return `hsl(${h},${s}%,${index != -1 ? l - pulse.value : l}%)`;
   }
 </script>
 
 {#await useTexture(texturePath) then texture}
-  <T.Mesh {name} {position}
-  
-  onpointerover={(e: IntersectionEvent<MouseEvent>) => {
-    e.stopPropagation();
-    console.dir(e);
-    setHover(c);
-  }}>
+  <T.Mesh {name} {position}>
     <T.BoxGeometry args={[1, 1, 1]} />
     {#each c.drawingOrder() as color}
       {#if color != "none"}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { T } from "@threlte/core";
+  import { T, useThrelte } from "@threlte/core";
   import { Environment, interactivity, OrbitControls } from "@threlte/extras";
   import { expoOut } from "svelte/easing";
   import { Tween } from "svelte/motion";
@@ -13,6 +13,7 @@
     positions,
     rotateColoursInRing,
   } from "../lib/model.svelte";
+  import { Raycaster, Vector2 } from "three";
 
   let x = -4.437954042433267;
   let y = 3.866852872687497;
@@ -57,16 +58,59 @@
 
   let pulse = new Pulse(0, 15, 30);
   let hovered = $state<CubeColor | null>(null);
-  function setHover(c:CubeColor){
-    hovered=c;
+  function setHover(c: CubeColor) {
+    hovered = c;
   }
 
-  interactivity({
-    filter: (hits, state) => {
-      // Only return the first hit
-    return hits.slice(0, 1)
+  let { scene, camera, canvas } = useThrelte();
+
+  class PickHelper {
+    raycaster: Raycaster;
+    pickedObject = $state("");
+    constructor() {
+      this.raycaster = new Raycaster();
+      this.pickedObject = "";
     }
-  })
+    pick(normalizedPosition: Vector2) {
+      // restore the color if there is a picked object
+      if (this.pickedObject) {
+        this.pickedObject = "";
+      }
+
+      // cast a ray through the frustum
+      this.raycaster.setFromCamera(normalizedPosition, camera.current);
+      // get the list of objects the ray intersected
+      const intersectedObjects = this.raycaster.intersectObjects(
+        scene.children
+      );
+      if (intersectedObjects.length) {
+        // pick the first object. It's the closest one
+        let closest = intersectedObjects[0].object;
+        while (!closest.name && closest.parent) {
+          closest = closest.parent;
+        }
+        this.pickedObject = closest.name;
+        console.dir(intersectedObjects);
+      }
+    }
+  }
+
+  let pickHelper = new PickHelper();
+
+  canvas.addEventListener(
+    "mousemove",
+    (e) => {
+      const rect = canvas.getBoundingClientRect();
+      let x = (e.clientX - rect.left) / rect.width;
+      let y = (e.clientY - rect.top) / rect.height;
+      let vx=2*x-1;
+      let vy=1-2*y;
+      let v = new Vector2(vx*2.5, vy*2.5);
+      pickHelper.pick(v);
+      // console.dir(v);
+    },
+    false
+  );
 </script>
 
 <T.PerspectiveCamera makeDefault position={[x, y, z]}>
@@ -81,7 +125,14 @@
     <T.Group rotation.x={x == whichAxis ? angle.current : 0}>
       {#each positions as y}
         {#each positions as z}
-          <Cube position={[x, y, z]} {colors} {ring} {debug} {pulse} {hovered} {setHover}/>
+          <Cube
+            position={[x, y, z]}
+            {colors}
+            {ring}
+            {debug}
+            {pulse}
+            hovered={pickHelper.pickedObject}
+          />
         {/each}
       {/each}
     </T.Group>
@@ -93,7 +144,14 @@
     <T.Group rotation.y={y == whichAxis ? angle.current : 0}>
       {#each positions as x}
         {#each positions as z}
-          <Cube position={[x, y, z]} {colors} {ring} {debug} {pulse}{hovered} {setHover}/>
+          <Cube
+            position={[x, y, z]}
+            {colors}
+            {ring}
+            {debug}
+            {pulse}
+            hovered={pickHelper.pickedObject}
+          />
         {/each}
       {/each}
     </T.Group>
@@ -105,7 +163,14 @@
     <T.Group rotation.z={z == whichAxis ? angle.current : 0}>
       {#each positions as x}
         {#each positions as y}
-          <Cube position={[x, y, z]} {colors} {ring} {debug} {pulse} {hovered}  {setHover}/>
+          <Cube
+            position={[x, y, z]}
+            {colors}
+            {ring}
+            {debug}
+            {pulse}
+            hovered={pickHelper.pickedObject}
+          />
         {/each}
       {/each}
     </T.Group>
