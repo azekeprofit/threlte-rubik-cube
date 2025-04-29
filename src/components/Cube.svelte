@@ -58,7 +58,8 @@
 {#await useTexture(texturePath) then texture}
   <T.Mesh {name} {position}>
     <T.BoxGeometry args={[1, 1, 1]} />
-    {#each c.drawingOrder() as color}
+    <T.MeshBasicMaterial color={hovered===name?'blue':'red'} />
+    <!-- {#each c.drawingOrder() as color}
       {#if color != "none"}
         <T.MeshStandardMaterial
           metalness={0.5}
@@ -70,8 +71,8 @@
       {/if}
       {#if color == "none"}
         <T.MeshBasicMaterial visible={false} {attach} />
-      {/if}
-    {/each}
-    <Edges color="black" />
+      {/if
+    {/each}} 
+    <Edges color="black" />-->
   </T.Mesh>
 {/await}
