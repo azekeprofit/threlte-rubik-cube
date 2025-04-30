@@ -1,6 +1,7 @@
 export const positions = [-1, 0, 1] as const;
 export type coord = (typeof positions)[number];
 export type rotAxisType = "x" | "y" | "z";
+export type cubeCoord = [coord, coord, coord];
 export const COLORS = {
   white: [0, 0, 100],
   yellow: [60, 100, 50],

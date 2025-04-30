@@ -1,11 +1,14 @@
 <script lang="ts">
   import { T } from "@threlte/core";
-  import { Environment, interactivity, OrbitControls } from "@threlte/extras";
+  import {
+    Environment,
+    Gizmo,
+    interactivity,
+    OrbitControls,
+  } from "@threlte/extras";
   import { expoOut } from "svelte/easing";
   import { Tween } from "svelte/motion";
   import { SvelteMap } from "svelte/reactivity";
-  import { Pulse } from "../reactive/pulse.svelte";
-  import Cube from "./Cube.svelte";
   import {
     type rotationProps,
     assetPath,
@@ -13,9 +16,11 @@
     positions,
     rotateColoursInRing,
   } from "../lib/model.svelte";
+  import { Pulse } from "../reactive/pulse.svelte";
+  import Cube from "./Cube.svelte";
 
   let x = -4.437954042433267;
-  let y = 3.866852872687497;
+  let y = 3.86685287268749;
   let z = 3.6940133200380143;
 
   const degree90 = Math.PI / 2;
@@ -27,9 +32,13 @@
     reverse,
     debug,
     start = $bindable(),
+    hovered = $bindable(),
+    showRing,
   }: rotationProps & {
     start: () => void;
     debug: boolean;
+    hovered: CubeColor | null;
+    showRing: boolean;
   } = $props();
 
   let colors = new SvelteMap<string, CubeColor>();
@@ -56,16 +65,17 @@
   };
 
   let pulse = new Pulse(0, 15, 30);
-  let hovered = $state<CubeColor | null>(null);
-  function setHover(c:CubeColor|null){
-    hovered=c;
+  function setHover(c: CubeColor | null) {
+    hovered = c;
   }
 
-  interactivity()
+  interactivity();
 </script>
 
 <T.PerspectiveCamera makeDefault position={[x, y, z]}>
-  <OrbitControls></OrbitControls>
+  <OrbitControls>
+    <Gizmo />
+  </OrbitControls>
   <!-- onchange={(e) => console.dir(e.target.object.position)} -->
 </T.PerspectiveCamera>
 
@@ -76,7 +86,14 @@
     <T.Group rotation.x={x == whichAxis ? angle.current : 0}>
       {#each positions as y}
         {#each positions as z}
-          <Cube position={[x, y, z]} {colors} ring={hovered!=null?[hovered]:ring}  {debug} {pulse} {setHover}/>
+          <Cube
+            position={[x, y, z]}
+            {colors}
+            ring={showRing ? ring : [hovered!]}
+            {debug}
+            {pulse}
+            {setHover}
+          />
         {/each}
       {/each}
     </T.Group>
@@ -88,7 +105,14 @@
     <T.Group rotation.y={y == whichAxis ? angle.current : 0}>
       {#each positions as x}
         {#each positions as z}
-          <Cube position={[x, y, z]} {colors} ring={hovered!=null?[hovered]:ring} {debug} {pulse} {setHover}/>
+          <Cube
+            position={[x, y, z]}
+            {colors}
+            ring={showRing ? ring : [hovered!]}
+            {debug}
+            {pulse}
+            {setHover}
+          />
         {/each}
       {/each}
     </T.Group>
@@ -100,7 +124,14 @@
     <T.Group rotation.z={z == whichAxis ? angle.current : 0}>
       {#each positions as x}
         {#each positions as y}
-          <Cube position={[x, y, z]} {colors} ring={hovered!=null?[hovered]:ring} {debug} {pulse}  {setHover}/>
+          <Cube
+            position={[x, y, z]}
+            {colors}
+            ring={showRing ? ring : [hovered!]}
+            {debug}
+            {pulse}
+            {setHover}
+          />
         {/each}
       {/each}
     </T.Group>

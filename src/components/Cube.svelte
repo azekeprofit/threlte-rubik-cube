@@ -1,5 +1,4 @@
 <script lang="ts">
-  type vector3 = [coord, coord, coord];
   import { T } from "@threlte/core";
   import { Edges, useTexture, type IntersectionEvent } from "@threlte/extras";
   import type { SvelteMap } from "svelte/reactivity";
@@ -8,7 +7,7 @@
     COLORS,
     CubeColor,
     type colorKey,
-    type coord,
+    type cubeCoord,
   } from "../lib/model.svelte";
   import { Pulse } from "../reactive/pulse.svelte";
 
@@ -20,7 +19,7 @@
     pulse,
     setHover,
   }: {
-    position: vector3;
+    position: cubeCoord;
     colors: SvelteMap<string, CubeColor>;
     ring: CubeColor[];
     debug: boolean;
