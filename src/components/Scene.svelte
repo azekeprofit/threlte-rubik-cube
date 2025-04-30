@@ -10,21 +10,23 @@
   import { Tween } from "svelte/motion";
   import { SvelteMap } from "svelte/reactivity";
   import {
-    type rotationProps,
+    allDirections,
     assetPath,
-    CubeColor,
+    calculateRing,
     positions,
     rotateColoursInRing,
-  } from "../lib/model.svelte";
+    type directionsType,
+    type rotAxisType,
+  } from "../model/model.svelte";
   import { Pulse } from "../reactive/pulse.svelte";
   import Cube from "./Cube.svelte";
+  import type { CubeColor } from "../model/cube.svelte";
 
   let x = -4.437954042433267;
   let y = 3.86685287268749;
   let z = 3.6940133200380143;
 
   const degree90 = Math.PI / 2;
-  const ringOrder = [0, 1, 2, 7, 8, 3, 6, 5, 4];
 
   let {
     whichAxis,
@@ -34,26 +36,26 @@
     start = $bindable(),
     hovered = $bindable(),
     showRing,
-  }: rotationProps & {
+    setDirections,
+  }: {
+    whichAxis: (typeof positions)[number];
+    rotAxis: rotAxisType;
+    reverse: boolean;
     start: () => void;
     debug: boolean;
     hovered: CubeColor | null;
     showRing: boolean;
+    setDirections: (d?: directionsType) => void;
   } = $props();
 
   let colors = new SvelteMap<string, CubeColor>();
 
-  let ring = $derived.by(() => {
-    let ring = [];
-    let i = 0;
-    for (let c of colors.values()) {
-      if (c[rotAxis] == whichAxis) {
-        ring[ringOrder[i++]] = c;
-      }
-    }
-    return ring;
-  });
+  let ring = $derived(calculateRing(colors, rotAxis, whichAxis));
 
+  let directions = $derived(
+    hovered ? allDirections(colors, hovered) : undefined
+  );
+  $effect(() => setDirections(directions));
   let angle = new Tween(0, { duration: 1000, easing: expoOut });
 
   start = () => {

@@ -4,12 +4,10 @@
   import type { SvelteMap } from "svelte/reactivity";
   import {
   assetPath,
-    COLORS,
-    CubeColor,
-    type colorKey,
     type cubeCoord,
-  } from "../lib/model.svelte";
+  } from "../model/model.svelte";
   import { Pulse } from "../reactive/pulse.svelte";
+  import { COLORS, CubeColor, type colorKey } from "../model/cube.svelte";
 
   let {
     position,
