@@ -28,25 +28,26 @@
 
   const degree90 = Math.PI / 2;
 
+  let hovered = $state<CubeColor | null>(null);
+  let showRing = $state(false);
+
   let {
     whichAxis,
     rotAxis,
     reverse,
     debug,
+    arrow = $bindable(),
     start = $bindable(),
-    hovered = $bindable(),
-    showRing,
-    setDirections,
   }: {
     whichAxis: (typeof positions)[number];
     rotAxis: rotAxisType;
     reverse: boolean;
     start: () => void;
     debug: boolean;
-    hovered: CubeColor | null;
-    showRing: boolean;
-    setDirections: (d?: directionsType) => void;
+    arrow: (axis: rotAxisType, rev: boolean) => void;
   } = $props();
+
+
 
   let colors = new SvelteMap<string, CubeColor>();
 
@@ -55,8 +56,19 @@
   let directions = $derived(
     hovered ? allDirections(colors, hovered) : undefined
   );
-  $effect(() => setDirections(directions));
   let angle = new Tween(0, { duration: 1000, easing: expoOut });
+
+  
+  
+  arrow = (axis: rotAxisType, rev: boolean) => {
+    if (hovered && directions) {
+      const dir = directions[axis];
+      rotAxis = dir.axis;
+      whichAxis = hovered[rotAxis];
+      reverse = rev ? !dir.reverse : dir.reverse;
+    }
+    showRing = true;
+  };
 
   start = () => {
     const yReverse = rotAxis == "y" ? !reverse : reverse;
