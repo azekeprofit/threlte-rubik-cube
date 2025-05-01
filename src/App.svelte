@@ -14,9 +14,7 @@
     rotAxisType
   } from "./model/model.svelte";
 
-  let whichAxis = $state<(typeof positions)[number]>(1);
-  let rotAxis = $state<rotAxisType>("y");
-  let reverse = $state(false);
+
   let debug = $state(false);
   let start= $state(()=>{});
   let arrow= $state<(axis: rotAxisType, rev: boolean)=>void>(()=>{});
@@ -28,9 +26,6 @@
 >
   <Canvas>
     <Scene
-      {whichAxis}
-      {rotAxis}
-      {reverse}
       {debug}
       bind:arrow
       bind:start
@@ -49,63 +44,6 @@
   </div>
 
   <div>
-    rotAxis:
-    <label
-      ><input
-        type="radio"
-        bind:group={rotAxis}
-        name="rotAxis"
-        value={"x"}
-      />x</label
-    >
-    <label
-      ><input
-        type="radio"
-        bind:group={rotAxis}
-        name="rotAxis"
-        value={"y"}
-      />y</label
-    >
-    <label
-      ><input
-        type="radio"
-        bind:group={rotAxis}
-        name="rotAxis"
-        value={"z"}
-      />z</label
-    >
-  </div>
-  <div>
-    which:
-    <label
-      ><input
-        type="radio"
-        bind:group={whichAxis}
-        name="whichAxis"
-        value={-1}
-      />-1</label
-    >
-    <label
-      ><input
-        type="radio"
-        bind:group={whichAxis}
-        name="whichAxis"
-        value={0}
-      />0</label
-    >
-    <label
-      ><input
-        type="radio"
-        bind:group={whichAxis}
-        name="whichAxis"
-        value={1}
-      />1</label
-    >
-  </div>
-  <div>
-    <label>
-      <input type="checkbox" bind:checked={reverse} />rev
-    </label>
     <label>
       <input type="checkbox" bind:checked={debug} />debug
     </label>
