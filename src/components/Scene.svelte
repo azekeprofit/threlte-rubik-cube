@@ -18,7 +18,7 @@
     rotateColoursInRing,
     type coord,
     type cubeCoord,
-    type rotAxisType
+    type rotAxisType,
   } from "../model/model.svelte";
   import { Pulse } from "../reactive/pulse.svelte";
   import Cube from "./Cube.svelte";
@@ -42,7 +42,6 @@
     arrow: (axis: rotAxisType, rev: boolean) => void;
   } = $props();
 
-
   let whichAxis = $state<(typeof positions)[number]>(1);
   let rotAxis = $state<rotAxisType>("y");
   let reverse = $state(false);
@@ -50,13 +49,9 @@
 
   let ring = $derived(calculateRing(colors, rotAxis, whichAxis));
 
-  let directions = $derived(
-    hovered ? allDirections(colors, hovered) : undefined
-  );
+  let directions = $derived(hovered ? allDirections(colors) : undefined);
   let angle = new Tween(0, { duration: 1000, easing: expoOut });
 
-  
-  
   arrow = (axis: rotAxisType, rev: boolean) => {
     if (hovered && directions) {
       const dir = directions[axis];
@@ -92,25 +87,25 @@
 
 <T.AmbientLight intensity={3} />
 
-{#snippet cubes(positionFunc:(a:coord,b:coord)=>cubeCoord)}
-{#each positions as a}
-{#each positions as b}
-  <Cube
-    position={positionFunc(a,b)}
-    {colors}
-    ring={showRing ? ring : [hovered!]}
-    {debug}
-    {pulse}
-    {setHover}
-  />
-{/each}
-{/each}
+{#snippet cubes(positionFunc: (a: coord, b: coord) => cubeCoord)}
+  {#each positions as a}
+    {#each positions as b}
+      <Cube
+        position={positionFunc(a, b)}
+        {colors}
+        ring={showRing ? ring : [hovered!]}
+        {debug}
+        {pulse}
+        {setHover}
+      />
+    {/each}
+  {/each}
 {/snippet}
 
 {#if rotAxis == "x"}
   {#each positions as x}
     <T.Group rotation.x={x == whichAxis ? angle.current : 0}>
-      {@render cubes((y,z)=>[x,y,z]) }
+      {@render cubes((y, z) => [x, y, z])}
     </T.Group>
   {/each}
 {/if}
@@ -118,7 +113,7 @@
 {#if rotAxis == "y"}
   {#each positions as y}
     <T.Group rotation.y={y == whichAxis ? angle.current : 0}>
-      {@render cubes((x,z)=>[x,y,z]) }
+      {@render cubes((x, z) => [x, y, z])}
     </T.Group>
   {/each}
 {/if}
@@ -126,7 +121,7 @@
 {#if rotAxis == "z"}
   {#each positions as z}
     <T.Group rotation.z={z == whichAxis ? angle.current : 0}>
-      {@render cubes((x,y)=>[x,y,z]) }
+      {@render cubes((x, y) => [x, y, z])}
     </T.Group>
   {/each}
 {/if}

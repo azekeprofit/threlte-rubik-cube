@@ -27,19 +27,6 @@ export function calculateRing(
   return ring;
 }
 
-function nextInRing(
-  colors: SvelteMap<string, CubeColor>,
-  rotAxis: rotAxisType,
-  whichAxis: coord,
-  cube: CubeColor
-) {
-  let ring = calculateRing(colors, rotAxis, whichAxis);
-  let index = ring.indexOf(cube);
-  let next = index + 1;
-  if (next >= ring.length) next = 0;
-  return ring[next];
-}
-
 function maxCoord(dirs: Map<rotAxisType, Vector3>, axis: rotAxisType) {
   return dirs
     .entries()
@@ -56,24 +43,64 @@ function getDirection([axis, v]: [rotAxisType, Vector3]) {
   return { axis, reverse: axis === "z" ? v[axis] < 0 : v[axis] > 0 };
 }
 
-export function allDirections(
-  colors: SvelteMap<string, CubeColor>,
-  cube: CubeColor
-) {
-  let initPos = cube.screenXY();
-  let allDir = new Map<rotAxisType, Vector3>();
-  rotAxisValues.forEach((a) =>
-    allDir.set(a, nextInRing(colors, a, cube[a], cube).screenXY().sub(initPos))
-  );
-  const maxY = maxCoord(allDir, "y");
-  allDir.delete(maxY[0]);
-  const maxX = maxCoord(allDir, "x");
-  allDir.delete(maxX[0]);
-  const maxZ = allDir.entries().next().value!;
+type axisValues = [rotAxisType, number][];
+
+function maxAxis(axes: axisValues) {
+  return axes.reduce((a, b) => (Math.abs(a[1]) > Math.abs(b[1]) ? a : b))[0];
+}
+
+const lowerFartherCorner = JSON.stringify([-1, -1, -1]);
+const xPoint = JSON.stringify([1, -1, -1]);
+const yPoint = JSON.stringify([-1, 1, -1]);
+const zPoint = JSON.stringify([-1, -1, 1]);
+
+export function allDirections(colors: SvelteMap<string, CubeColor>) {
+  let initPos = colors.get(lowerFartherCorner)!.screenXY();
+
+  let xPos = colors.get(xPoint)!.screenXY().sub(initPos);
+  let xAxisLen = xPos.length();
+
+  let yPos = colors.get(yPoint)!.screenXY().sub(initPos);
+  let yAxisLen = yPos.length();
+
+  let zPos = colors.get(zPoint)!.screenXY().sub(initPos);
+  let zAxisLen = zPos.length();
+
+  let areas: axisValues = [
+    ["z", xAxisLen + yAxisLen],
+    ["y", xAxisLen + zAxisLen],
+    ["x", yAxisLen + zAxisLen],
+  ];
+
+  let zPlane = maxAxis(areas);
+  let maxCoords: axisValues =
+    zPlane === "z"
+      ? [
+          ["x", xPos.x],
+          ["x", xPos.y],
+          ["y", yPos.x],
+          ["y", yPos.y],
+        ]
+      : zPlane === "y"
+      ? [
+          ["x", xPos.x],
+          ["x", xPos.y],
+          ["z", zPos.x],
+          ["z", zPos.y],
+        ]
+      : [
+          ["y", yPos.x],
+          ["y", yPos.y],
+          ["z", zPos.x],
+          ["z", zPos.y],
+        ];
+  let maxCoord = maxAxis(maxCoords);
+  let lastCoord = maxCoords.find((x) => x[0] !== maxCoord[0])![0];
+
   const dirs: directionsType = {
-    x: getDirection(maxX),
-    y: getDirection(maxY),
-    z: getDirection(maxZ),
+    x: { axis: "x", reverse: false },
+    y: { axis: "y", reverse: false },
+    z: { axis: zPlane, reverse: false },
   };
 
   return dirs;

@@ -34,13 +34,13 @@
 </div>
 <div style="height:400px;display: inline-block;vertical-align:middle">
   <div>
-    <RotateCw onmouseover={() => arrow("y", false)} onclick={start} />
-    <RotateCcw onmouseover={() => arrow("y", true)} onclick={start} />
+    <RotateCw onmouseover={() => arrow("z", false)} onclick={start} />
+    <RotateCcw onmouseover={() => arrow("z", true)} onclick={start} />
     <br />
-    <ArrowUp onmouseover={() => arrow("x", true)} onclick={start} /><br />
-    <ArrowDown onmouseover={() => arrow("x", false)} onclick={start} /><br />
-    <ArrowLeft onmouseover={() => arrow("z", true)} onclick={start} />
-    <ArrowRight onmouseover={() => arrow("z", false)} onclick={start} />
+    <ArrowUp onmouseover={() => arrow("y", true)} onclick={start} /><br />
+    <ArrowDown onmouseover={() => arrow("y", false)} onclick={start} /><br />
+    <ArrowLeft onmouseover={() => arrow("x", true)} onclick={start} />
+    <ArrowRight onmouseover={() => arrow("x", false)} onclick={start} />
   </div>
 
   <div>
