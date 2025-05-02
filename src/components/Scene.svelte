@@ -77,7 +77,7 @@
     hovered = c;
     showRing = false;
   }
-  
+
   interactivity();
 </script>
 

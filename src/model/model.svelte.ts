@@ -41,7 +41,7 @@ export interface direction {
 export type directionsType = Record<rotAxisType, direction>;
 
 function maxAxis(axes: any[], index: number) {
-  return axes.reduce((a, b) => (Math.abs(a[1]) > Math.abs(b[1]) ? a : b));
+  return axes.reduce((a, b) => (Math.abs(a[index]) > Math.abs(b[index]) ? a : b));
 }
 
 const lowerFartherCorner = JSON.stringify([-1, -1, -1]);
