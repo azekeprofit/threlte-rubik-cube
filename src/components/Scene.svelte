@@ -49,7 +49,9 @@
 
   let ring = $derived(calculateRing(colors, rotAxis, whichAxis));
 
-  let directions = $derived(hovered ? allDirections(colors) : undefined);
+  let directions = $derived(
+    hovered ? allDirections(colors, hovered) : undefined
+  );
   let angle = new Tween(0, { duration: 1000, easing: expoOut });
 
   arrow = (axis: rotAxisType, rev: boolean) => {
@@ -73,8 +75,9 @@
   let pulse = new Pulse(0, 15, 30);
   function setHover(c: CubeColor | null) {
     hovered = c;
+    showRing = false;
   }
-
+  
   interactivity();
 </script>
 

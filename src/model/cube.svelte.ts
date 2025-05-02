@@ -25,6 +25,7 @@ export class CubeColor {
   right = $state<colorKey>("none");
   front = $state<colorKey>("none");
   back = $state<colorKey>("none");
+  threlte = useThrelte();
 
   constructor(x: coord, y: coord, z: coord) {
     this.x = x;
@@ -51,9 +52,10 @@ export class CubeColor {
   }
 
   screenXY() {
-    const { camera } = useThrelte();
+    const { camera } = this.threlte;
     var vector = new Vector3(this.x, this.y, this.z);
     vector.project(camera.current);
+    console.dir(camera.current.position);
     return vector;
   }
 }

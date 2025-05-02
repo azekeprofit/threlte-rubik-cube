@@ -1,6 +1,7 @@
 import type { SvelteMap } from "svelte/reactivity";
 import type { CubeColor, side } from "./cube.svelte";
 import type { Vector3 } from "three";
+import { max } from "three/tsl";
 
 export const positions = [-1, 0, 1] as const;
 export type coord = (typeof positions)[number];
@@ -39,14 +40,8 @@ export interface direction {
 }
 export type directionsType = Record<rotAxisType, direction>;
 
-function getDirection([axis, v]: [rotAxisType, Vector3]) {
-  return { axis, reverse: axis === "z" ? v[axis] < 0 : v[axis] > 0 };
-}
-
-type axisValues = [rotAxisType, number][];
-
-function maxAxis(axes: axisValues) {
-  return axes.reduce((a, b) => (Math.abs(a[1]) > Math.abs(b[1]) ? a : b))[0];
+function maxAxis(axes: any[], index: number) {
+  return axes.reduce((a, b) => (Math.abs(a[1]) > Math.abs(b[1]) ? a : b));
 }
 
 const lowerFartherCorner = JSON.stringify([-1, -1, -1]);
@@ -54,7 +49,10 @@ const xPoint = JSON.stringify([1, -1, -1]);
 const yPoint = JSON.stringify([-1, 1, -1]);
 const zPoint = JSON.stringify([-1, -1, 1]);
 
-export function allDirections(colors: SvelteMap<string, CubeColor>) {
+export function allDirections(
+  colors: SvelteMap<string, CubeColor>,
+  cube: CubeColor
+) {
   let initPos = colors.get(lowerFartherCorner)!.screenXY();
 
   let xPos = colors.get(xPoint)!.screenXY().sub(initPos);
@@ -66,41 +64,59 @@ export function allDirections(colors: SvelteMap<string, CubeColor>) {
   let zPos = colors.get(zPoint)!.screenXY().sub(initPos);
   let zAxisLen = zPos.length();
 
-  let areas: axisValues = [
-    ["z", xAxisLen + yAxisLen],
-    ["y", xAxisLen + zAxisLen],
-    ["x", yAxisLen + zAxisLen],
-  ];
+  let areas = [];
+  if (Math.abs(cube.z) === 1) areas.push(["z", xAxisLen + yAxisLen]);
+  if (Math.abs(cube.y) === 1) areas.push(["y", xAxisLen + zAxisLen]);
+  if (Math.abs(cube.x) === 1) areas.push(["x", yAxisLen + zAxisLen]);
 
-  let zPlane = maxAxis(areas);
-  let maxCoords: axisValues =
+  let zPlane = maxAxis(areas, 1)[0];
+
+  let maxCoords =
     zPlane === "z"
       ? [
-          ["x", xPos.x],
-          ["x", xPos.y],
-          ["y", yPos.x],
-          ["y", yPos.y],
+          ["x", "x", xPos.x],
+          ["x", "y", xPos.y],
+          ["y", "x", yPos.x],
+          ["y", "y", yPos.y],
         ]
       : zPlane === "y"
       ? [
-          ["x", xPos.x],
-          ["x", xPos.y],
-          ["z", zPos.x],
-          ["z", zPos.y],
+          ["x", "x", xPos.x],
+          ["x", "y", xPos.y],
+          ["z", "x", zPos.x],
+          ["z", "y", zPos.y],
         ]
       : [
-          ["y", yPos.x],
-          ["y", yPos.y],
-          ["z", zPos.x],
-          ["z", zPos.y],
+          ["y", "x", yPos.x],
+          ["y", "y", yPos.y],
+          ["z", "x", zPos.x],
+          ["z", "y", zPos.y],
         ];
-  let maxCoord = maxAxis(maxCoords);
-  let lastCoord = maxCoords.find((x) => x[0] !== maxCoord[0])![0];
+  let maxCoord = maxAxis(maxCoords, 2);
+
+  let otherCoord = maxCoords.find(
+    (x) => x[0] !== maxCoord[0] && x[1] !== maxCoord[1]
+  )!;
+
+  let xDirection = maxCoord[1] == "y" ? maxCoord : otherCoord;
+  let yDirection = maxCoord[1] == "x" ? maxCoord : otherCoord;
+
+  $inspect([
+    initPos,
+    xPos,
+    yPos,
+    zPos,
+    zPlane,
+    maxCoord,
+    otherCoord,
+    xDirection,
+    yDirection,
+  ]);
 
   const dirs: directionsType = {
-    x: { axis: "x", reverse: false },
-    y: { axis: "y", reverse: false },
-    z: { axis: zPlane, reverse: false },
+    x: { axis: xDirection[0], reverse: xDirection[2] > 0 },
+    y: { axis: yDirection[0], reverse: yDirection[2] < 0 },
+    z: { axis: zPlane, reverse: true },
   };
 
   return dirs;
