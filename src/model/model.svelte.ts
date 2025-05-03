@@ -1,7 +1,5 @@
 import type { SvelteMap } from "svelte/reactivity";
 import type { CubeColor, side } from "./cube.svelte";
-import type { Vector3 } from "three";
-import { max } from "three/tsl";
 
 export const positions = [-1, 0, 1] as const;
 export type coord = (typeof positions)[number];
@@ -26,12 +24,6 @@ export function calculateRing(
     }
   }
   return ring;
-}
-
-function maxCoord(dirs: Map<rotAxisType, Vector3>, axis: rotAxisType) {
-  return dirs
-    .entries()
-    .reduce((a, b) => (Math.abs(a[1][axis]) > Math.abs(b[1][axis]) ? a : b));
 }
 
 export interface direction {
@@ -69,24 +61,24 @@ export function allDirections(
     ["y", "y", yPos.y],
     ["z", "x", zPos.x],
     ["z", "y", zPos.y],
-  ] as [rotAxisType, rotAxisType, number][];
+  ] as axis[];
   let maxCoord = maxAxis(maxCoords, [zPlane]);
-  let otherCoord = maxAxis(maxCoords, [zPlane,maxCoord[0]]);
+  let otherCoord = maxAxis(maxCoords, [zPlane, maxCoord[0]]);
 
   let xDirection = maxCoord[1] == "y" ? maxCoord : otherCoord;
   let yDirection = maxCoord[1] == "x" ? maxCoord : otherCoord;
 
-  $inspect([
-    initPos,
-    xPos,
-    yPos,
-    zPos,
-    zPlane,
-    maxCoord,
-    otherCoord,
-    xDirection,
-    yDirection,
-  ]);
+  // $inspect([
+  //   initPos,
+  //   xPos,
+  //   yPos,
+  //   zPos,
+  //   zPlane,
+  //   maxCoord,
+  //   otherCoord,
+  //   xDirection,
+  //   yDirection,
+  // ]);
 
   const dirs: directionsType = {
     x: { axis: xDirection[0], reverse: xDirection[2] > 0 },
