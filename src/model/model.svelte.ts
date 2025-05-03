@@ -40,8 +40,11 @@ export interface direction {
 }
 export type directionsType = Record<rotAxisType, direction>;
 
-function maxAxis(axes: any[], index: number) {
-  return axes.reduce((a, b) => (Math.abs(a[index]) > Math.abs(b[index]) ? a : b));
+type axis = [rotAxisType, rotAxisType, number];
+function maxAxis(axes: axis[], filter: rotAxisType[]) {
+  return axes
+    .filter((a) => !filter.includes(a[0]))
+    .reduce((a, b) => (Math.abs(a[2]) > Math.abs(b[2]) ? a : b));
 }
 
 const lowerFartherCorner = JSON.stringify([-1, -1, -1]);
@@ -51,52 +54,24 @@ const zPoint = JSON.stringify([-1, -1, 1]);
 
 export function allDirections(
   colors: SvelteMap<string, CubeColor>,
-  cube: CubeColor
+  zPlane: rotAxisType
 ) {
   let initPos = colors.get(lowerFartherCorner)!.screenXY();
 
   let xPos = colors.get(xPoint)!.screenXY().sub(initPos);
-  let xAxisLen = xPos.length();
-
   let yPos = colors.get(yPoint)!.screenXY().sub(initPos);
-  let yAxisLen = yPos.length();
-
   let zPos = colors.get(zPoint)!.screenXY().sub(initPos);
-  let zAxisLen = zPos.length();
 
-  let areas = [];
-  if (Math.abs(cube.z) === 1) areas.push(["z", xAxisLen + yAxisLen]);
-  if (Math.abs(cube.y) === 1) areas.push(["y", xAxisLen + zAxisLen]);
-  if (Math.abs(cube.x) === 1) areas.push(["x", yAxisLen + zAxisLen]);
-
-  let zPlane = maxAxis(areas, 1)[0];
-
-  let maxCoords =
-    zPlane === "z"
-      ? [
-          ["x", "x", xPos.x],
-          ["x", "y", xPos.y],
-          ["y", "x", yPos.x],
-          ["y", "y", yPos.y],
-        ]
-      : zPlane === "y"
-      ? [
-          ["x", "x", xPos.x],
-          ["x", "y", xPos.y],
-          ["z", "x", zPos.x],
-          ["z", "y", zPos.y],
-        ]
-      : [
-          ["y", "x", yPos.x],
-          ["y", "y", yPos.y],
-          ["z", "x", zPos.x],
-          ["z", "y", zPos.y],
-        ];
-  let maxCoord = maxAxis(maxCoords, 2);
-
-  let otherCoord = maxCoords.find(
-    (x) => x[0] !== maxCoord[0] && x[1] !== maxCoord[1]
-  )!;
+  let maxCoords = [
+    ["x", "x", xPos.x],
+    ["x", "y", xPos.y],
+    ["y", "x", yPos.x],
+    ["y", "y", yPos.y],
+    ["z", "x", zPos.x],
+    ["z", "y", zPos.y],
+  ] as [rotAxisType, rotAxisType, number][];
+  let maxCoord = maxAxis(maxCoords, [zPlane]);
+  let otherCoord = maxAxis(maxCoords, [zPlane,maxCoord[0]]);
 
   let xDirection = maxCoord[1] == "y" ? maxCoord : otherCoord;
   let yDirection = maxCoord[1] == "x" ? maxCoord : otherCoord;

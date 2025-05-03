@@ -47,9 +47,9 @@
   let colors = new SvelteMap<string, CubeColor>();
 
   let ring = $derived(calculateRing(colors, rotAxis, whichAxis));
-
+  let zPlane = $state<rotAxisType>("z");
   let directions = $derived(
-    hovered ? allDirections(colors, hovered) : undefined
+    hovered ? allDirections(colors, zPlane) : undefined
   );
   let angle = new Tween(0, { duration: 1000, easing: expoOut });
 
@@ -93,7 +93,8 @@
         {ring}
         {debug}
         {pulse}
-        bind:hovered={hovered}
+        bind:hovered
+        bind:zPlane
       />
     {/each}
   {/each}
