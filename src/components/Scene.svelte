@@ -30,7 +30,6 @@
   const degree90 = Math.PI / 2;
 
   let hovered = $state<CubeColor | null>(null);
-  let showRing = $state(false);
 
   let {
     debug,
@@ -61,7 +60,6 @@
       whichAxis = hovered[rotAxis];
       reverse = rev ? !dir.reverse : dir.reverse;
     }
-    showRing = true;
   };
 
   start = () => {
@@ -72,11 +70,7 @@
     });
   };
 
-  let pulse = new Pulse(0, 15, 30);
-  function setHover(c: CubeColor | null) {
-    hovered = c;
-    showRing = false;
-  }
+  let pulse = new Pulse(0, 30, 50);
 
   interactivity();
 </script>
@@ -96,10 +90,10 @@
       <Cube
         position={positionFunc(a, b)}
         {colors}
-        ring={showRing ? ring : [hovered!]}
+        {ring}
         {debug}
         {pulse}
-        {setHover}
+        bind:hovered={hovered}
       />
     {/each}
   {/each}

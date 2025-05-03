@@ -1,6 +1,7 @@
 import { useThrelte } from "@threlte/core";
 import { Vector3 } from "three";
 import type { coord } from "./model.svelte";
+import Scene from "../components/Scene.svelte";
 
 export const COLORS = {
   white: [0, 0, 100],
@@ -25,7 +26,6 @@ export class CubeColor {
   right = $state<colorKey>("none");
   front = $state<colorKey>("none");
   back = $state<colorKey>("none");
-  threlte = useThrelte();
 
   constructor(x: coord, y: coord, z: coord) {
     this.x = x;
@@ -52,10 +52,20 @@ export class CubeColor {
   }
 
   screenXY() {
-    const { camera } = this.threlte;
-    var vector = new Vector3(this.x, this.y, this.z);
+    const { camera, canvas, scene } = useThrelte();
+    let vector = new Vector3(this.x, this.y, this.z);
+
+    // vector.setFromMatrixPosition(scene.matrixWorld);
+    let widthHalf = canvas.clientWidth / 2;
+    let heightHalf = canvas.clientHeight / 2;
     vector.project(camera.current);
-    console.dir(camera.current.position);
     return vector;
+
+    console.dir(vector);
+    return new Vector3(
+      vector.x * widthHalf + widthHalf,
+      heightHalf - vector.y * heightHalf,
+      0
+    );
   }
 }
