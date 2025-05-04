@@ -4,7 +4,7 @@
     Environment,
     Gizmo,
     interactivity,
-    OrbitControls,
+    OrbitControls
   } from "@threlte/extras";
   import { expoOut } from "svelte/easing";
   import { Tween } from "svelte/motion";
@@ -21,6 +21,7 @@
     type rotAxisType,
   } from "../model/model.svelte";
   import { Pulse } from "../reactive/pulse.svelte";
+  import Arrows from "./Arrows.svelte";
   import Cube from "./Cube.svelte";
 
   let x = -4.437954042433267;
@@ -123,5 +124,11 @@
     </T.Group>
   {/each}
 {/if}
+
+{#each positions as a}
+  {#each [2, -2] as b}
+    <Arrows {a} {b} {hovered} {zPlane} />
+  {/each}
+{/each}
 
 <Environment isBackground={false} url={`${assetPath}/studio_small_08_1k.hdr`} />
