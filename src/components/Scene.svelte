@@ -125,10 +125,6 @@
   {/each}
 {/if}
 
-{#each positions as a}
-  {#each [2, -2] as b}
-    <Arrows {a} {b} {hovered} {zPlane} />
-  {/each}
-{/each}
+    <Arrows {hovered} {zPlane} />
 
 <Environment isBackground={false} url={`${assetPath}/studio_small_08_1k.hdr`} />

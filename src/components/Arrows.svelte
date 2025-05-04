@@ -6,13 +6,9 @@
   import type { CubeColor } from "../model/cube.svelte";
 
   let {
-    a,
-    b,
     zPlane,
     hovered,
   }: {
-    a: number;
-    b: number;
     hovered: CubeColor | null;
     zPlane: rotAxisType;
   } = $props();
@@ -21,18 +17,19 @@
     zPlane == "x" ? ["y", "z"] : zPlane == "y" ? ["x", "z"] : ["x", "y"]
   );
 
-  function xy(rev: boolean) {
+  function xy(rev: boolean, plus: boolean) {
     let v = new Vector3();
+    let firstCoord = flatAxes[rev ? 0 : 1];
     v[zPlane] = hovered![zPlane];
-    v[flatAxes[rev ? 0 : 1]] = a;
-    v[flatAxes[rev ? 1 : 0]] = b;
+    v[firstCoord] = hovered![firstCoord];
+    v[flatAxes[rev ? 1 : 0]] = plus ? 2 : -2;
     return [v.x, v.y, v.z] as cubeCoord;
   }
 </script>
 
-{#snippet arrow(rev: boolean)}
+{#snippet arrow(rev: boolean, plus: boolean)}
   <T.Mesh
-    position={xy(rev)}
+    position={xy(rev, plus)}
     onclick={(e: IntersectionEvent<MouseEvent>) => {
       e.stopPropagation();
       console.dir(e);
@@ -44,6 +41,8 @@
 {/snippet}
 
 {#if hovered != null}
-  {@render arrow(true)}
-  {@render arrow(false)}
+  {@render arrow(true, true)}
+  {@render arrow(false, true)}
+  {@render arrow(true, false)}
+  {@render arrow(false, false)}
 {/if}
