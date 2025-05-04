@@ -8,31 +8,49 @@
   let {
     zPlane,
     hovered,
+    whichAxis = $bindable(),
+    rotAxis = $bindable(),
+    reverse = $bindable(),
+    start,
   }: {
     hovered: CubeColor | null;
     zPlane: rotAxisType;
+    whichAxis: coord;
+    rotAxis: rotAxisType;
+    reverse: boolean;
+    start: () => void;
   } = $props();
 
   let flatAxes = $derived<[rotAxisType, rotAxisType]>(
     zPlane == "x" ? ["y", "z"] : zPlane == "y" ? ["x", "z"] : ["x", "y"]
   );
 
-  function xy(rev: boolean, plus: boolean) {
+  function xy(
+    firstCoord: rotAxisType,
+    secondCoord: rotAxisType,
+    plus: boolean
+  ) {
     let v = new Vector3();
-    let firstCoord = flatAxes[rev ? 0 : 1];
     v[zPlane] = hovered![zPlane];
     v[firstCoord] = hovered![firstCoord];
-    v[flatAxes[rev ? 1 : 0]] = plus ? 2 : -2;
+    v[secondCoord] = plus ? 2 : -2;
     return [v.x, v.y, v.z] as cubeCoord;
   }
 </script>
 
-{#snippet arrow(rev: boolean, plus: boolean)}
+{#snippet arrow(
+  firstCoord: rotAxisType,
+  secondCoord: rotAxisType,
+  plus: boolean
+)}
   <T.Mesh
-    position={xy(rev, plus)}
+    position={xy(firstCoord, secondCoord, plus)}
     onclick={(e: IntersectionEvent<MouseEvent>) => {
       e.stopPropagation();
-      console.dir(e);
+      rotAxis = firstCoord;
+      whichAxis = hovered![firstCoord];
+      reverse = !plus;
+      start();
     }}
   >
     <T.BoxGeometry args={[0.3, 0.3, 0.3]} />
@@ -41,8 +59,8 @@
 {/snippet}
 
 {#if hovered != null}
-  {@render arrow(true, true)}
-  {@render arrow(false, true)}
-  {@render arrow(true, false)}
-  {@render arrow(false, false)}
+  {@render arrow(flatAxes[0], flatAxes[1], true)}
+  {@render arrow(flatAxes[1], flatAxes[0], true)}
+  {@render arrow(flatAxes[0], flatAxes[1], false)}
+  {@render arrow(flatAxes[1], flatAxes[0], false)}
 {/if}

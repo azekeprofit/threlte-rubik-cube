@@ -4,7 +4,7 @@
     Environment,
     Gizmo,
     interactivity,
-    OrbitControls
+    OrbitControls,
   } from "@threlte/extras";
   import { expoOut } from "svelte/easing";
   import { Tween } from "svelte/motion";
@@ -34,12 +34,8 @@
 
   let {
     debug,
-    arrow = $bindable(),
-    start = $bindable(),
   }: {
-    start: () => void;
     debug: boolean;
-    arrow: (axis: rotAxisType, rev: boolean) => void;
   } = $props();
 
   let whichAxis = $state<(typeof positions)[number]>(1);
@@ -54,22 +50,22 @@
   );
   let angle = new Tween(0, { duration: 1000, easing: expoOut });
 
-  arrow = (axis: rotAxisType, rev: boolean) => {
+  function arrow(axis: rotAxisType, rev: boolean) {
     if (hovered && directions) {
       const dir = directions[axis];
       rotAxis = dir.axis;
       whichAxis = hovered[rotAxis];
       reverse = rev ? !dir.reverse : dir.reverse;
     }
-  };
+  }
 
-  start = () => {
+  function start() {
     const yReverse = rotAxis == "y" ? !reverse : reverse;
     angle.set(yReverse ? -degree90 : degree90).then(() => {
       rotateColoursInRing(ring, rotAxis, reverse);
       return angle.set(0, { duration: 0 });
     });
-  };
+  }
 
   let pulse = new Pulse(0, 30, 50);
 
@@ -125,6 +121,6 @@
   {/each}
 {/if}
 
-    <Arrows {hovered} {zPlane} />
+<Arrows {hovered} {zPlane} bind:whichAxis bind:rotAxis bind:reverse {start} />
 
 <Environment isBackground={false} url={`${assetPath}/studio_small_08_1k.hdr`} />
