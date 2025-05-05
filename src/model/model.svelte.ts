@@ -8,12 +8,12 @@ export type rotAxisType = (typeof rotAxisValues)[number];
 export type cubeCoord = [coord, coord, coord];
 
 export const assetPath = `${import.meta.env.BASE_URL}/assets`;
-
+export const degree90 = Math.PI / 2;
 const ringOrder = [0, 1, 2, 7, 8, 3, 6, 5, 4];
 
 export const flatAxes: (zPlane: rotAxisType) => [rotAxisType, rotAxisType] = (
   zPlane: rotAxisType
-) => (zPlane == "x" ? ["y", "z"] : zPlane == "y" ? ["x", "z"] : ["x", "y"]);
+) => (zPlane == "x" ? ["y", "z"] : zPlane == "y" ? ["x", "z"] : ["y", "x"]);
 
 export function calculateRing(
   colors: SvelteMap<string, CubeColor>,

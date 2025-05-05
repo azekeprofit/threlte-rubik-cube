@@ -2,6 +2,7 @@
   import { T } from "@threlte/core";
   import type { IntersectionEvent } from "@threlte/extras";
   import {
+    degree90,
     flatAxes,
     type coord,
     type cubeCoord,
@@ -39,6 +40,12 @@
   }
 
   let f = $derived(flatAxes(zPlane));
+
+  function rotation(num: number) {
+    let r = new Vector3(0, 0, zPlane == "y" ? degree90 : 0);
+    r[zPlane] += degree90 * num ;
+    return [r.x, r.y, r.z] as [number, number, number];
+  }
 </script>
 
 {#snippet arrow(
@@ -49,6 +56,7 @@
 )}
   <T.Mesh
     position={xy(firstCoord, secondCoord, plus)}
+    rotation={rotation(num)}
     onclick={(e: IntersectionEvent<MouseEvent>) => {
       e.stopPropagation();
       rotAxis = firstCoord;
@@ -57,21 +65,21 @@
       reverse =
         (zPlane == "z" && touchPoint == -1) ||
         (zPlane == "x" && touchPoint == 1) ||
-        (zPlane == "y" && touchPoint == -1 && num == 2) ||
-        (zPlane == "y" && touchPoint == 1 && num == 1)
+        (zPlane == "y" && touchPoint == -1 && num % 2 == 2) ||
+        (zPlane == "y" && touchPoint == 1 && num % 2 == 1)
           ? !plus
           : plus;
       start();
     }}
   >
-    <T.BoxGeometry args={[0.3, 0.3, 0.3]} />
-    <T.MeshBasicMaterial color="pink" />
+    <T.ConeGeometry args={[0.1, 0.5]} />
+    <T.MeshBasicMaterial color={["pink", "blue", "green", "maroon"][num]} />
   </T.Mesh>
 {/snippet}
 
 {#if hovered != null}
   {@render arrow(f[0], f[1], true, 1)}
   {@render arrow(f[1], f[0], true, 2)}
-  {@render arrow(f[0], f[1], false, 1)}
-  {@render arrow(f[1], f[0], false, 2)}
+  {@render arrow(f[0], f[1], false, 3)}
+  {@render arrow(f[1], f[0], false, 4)}
 {/if}

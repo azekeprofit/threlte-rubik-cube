@@ -14,6 +14,7 @@
     allDirections,
     assetPath,
     calculateRing,
+    degree90,
     positions,
     rotateColoursInRing,
     type coord,
@@ -27,10 +28,6 @@
   let x = -4.437954042433267;
   let y = 3.86685287268749;
   let z = 3.6940133200380143;
-
-  const degree90 = Math.PI / 2;
-
-  
 
   let {
     debug,
