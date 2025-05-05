@@ -30,12 +30,16 @@
 
   const degree90 = Math.PI / 2;
 
-  let hovered = $state<CubeColor | null>(null);
+  
 
   let {
     debug,
+    hovered=$bindable(),
+    zPlane=$bindable(),
   }: {
     debug: boolean;
+    hovered:CubeColor|null;
+    zPlane:rotAxisType,
   } = $props();
 
   let whichAxis = $state<(typeof positions)[number]>(1);
@@ -44,7 +48,6 @@
   let colors = new SvelteMap<string, CubeColor>();
 
   let ring = $derived(calculateRing(colors, rotAxis, whichAxis));
-  let zPlane = $state<rotAxisType>("z");
   let directions = $derived(
     hovered ? allDirections(colors, zPlane) : undefined
   );

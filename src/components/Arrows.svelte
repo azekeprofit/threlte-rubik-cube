@@ -1,7 +1,12 @@
 <script lang="ts">
   import { T } from "@threlte/core";
   import type { IntersectionEvent } from "@threlte/extras";
-  import type { coord, cubeCoord, rotAxisType } from "../model/model.svelte";
+  import {
+    flatAxes,
+    type coord,
+    type cubeCoord,
+    type rotAxisType,
+  } from "../model/model.svelte";
   import { Vector3 } from "three";
   import type { CubeColor } from "../model/cube.svelte";
 
@@ -21,10 +26,6 @@
     start: () => void;
   } = $props();
 
-  let flatAxes = $derived<[rotAxisType, rotAxisType]>(
-    zPlane == "x" ? ["y", "z"] : zPlane == "y" ? ["x", "z"] : ["x", "y"]
-  );
-
   function xy(
     firstCoord: rotAxisType,
     secondCoord: rotAxisType,
@@ -36,6 +37,8 @@
     v[secondCoord] = plus ? 2 : -2;
     return [v.x, v.y, v.z] as cubeCoord;
   }
+
+  let f = $derived(flatAxes(zPlane));
 </script>
 
 {#snippet arrow(
@@ -49,7 +52,15 @@
       e.stopPropagation();
       rotAxis = firstCoord;
       whichAxis = hovered![firstCoord];
-      reverse = !plus;
+      let touchPoint = hovered![zPlane];
+      reverse =
+        (zPlane == "z" && touchPoint == -1) ||
+        (zPlane == "x" && touchPoint == 1) ||
+        (zPlane == "y" && touchPoint == 1)
+          ? !plus
+          : plus;
+
+      console.dir([whichAxis, touchPoint, plus, reverse, zPlane]);
       start();
     }}
   >
@@ -59,8 +70,8 @@
 {/snippet}
 
 {#if hovered != null}
-  {@render arrow(flatAxes[0], flatAxes[1], true)}
-  {@render arrow(flatAxes[1], flatAxes[0], true)}
-  {@render arrow(flatAxes[0], flatAxes[1], false)}
-  {@render arrow(flatAxes[1], flatAxes[0], false)}
+  {@render arrow(f[0], f[1], true)}
+  {@render arrow(f[1], f[0], true)}
+  {@render arrow(f[0], f[1], false)}
+  {@render arrow(f[1], f[0], false)}
 {/if}

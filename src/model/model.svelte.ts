@@ -11,6 +11,10 @@ export const assetPath = `${import.meta.env.BASE_URL}/assets`;
 
 const ringOrder = [0, 1, 2, 7, 8, 3, 6, 5, 4];
 
+export const flatAxes: (zPlane: rotAxisType) => [rotAxisType, rotAxisType] = (
+  zPlane: rotAxisType
+) => (zPlane == "x" ? ["y", "z"] : zPlane == "y" ? ["x", "z"] : ["x", "y"]);
+
 export function calculateRing(
   colors: SvelteMap<string, CubeColor>,
   rotAxis: rotAxisType,
