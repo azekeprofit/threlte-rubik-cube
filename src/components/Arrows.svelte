@@ -56,7 +56,7 @@
       reverse =
         (zPlane == "z" && touchPoint == -1) ||
         (zPlane == "x" && touchPoint == 1) ||
-        (zPlane == "y" && touchPoint == 1)
+        (zPlane == "y" && touchPoint == -1)
           ? !plus
           : plus;
 
