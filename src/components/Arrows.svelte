@@ -1,6 +1,9 @@
 <script lang="ts">
   import { T } from "@threlte/core";
   import type { IntersectionEvent } from "@threlte/extras";
+  import { Vector3 } from "three";
+  import type { CubeColor } from "../model/cube.svelte";
+  import { injectLookAtPlugin } from "../model/lookAt.svelte";
   import {
     degree90,
     flatAxes,
@@ -8,8 +11,6 @@
     type cubeCoord,
     type rotAxisType,
   } from "../model/model.svelte";
-  import { Vector3 } from "three";
-  import type { CubeColor } from "../model/cube.svelte";
 
   let {
     zPlane,
@@ -41,11 +42,7 @@
 
   let f = $derived(flatAxes(zPlane));
 
-  function rotation(num: number) {
-    let r = new Vector3(0, 0, zPlane == "y" ? degree90 : 0);
-    r[zPlane] += degree90 * num ;
-    return [r.x, r.y, r.z] as [number, number, number];
-  }
+  injectLookAtPlugin();
 </script>
 
 {#snippet arrow(
@@ -54,27 +51,31 @@
   plus: boolean,
   num: number
 )}
-  <T.Mesh
+  <T.Group
+    lookAt={[hovered?.x, hovered?.y, hovered?.z]}
     position={xy(firstCoord, secondCoord, plus)}
-    rotation={rotation(num)}
-    onclick={(e: IntersectionEvent<MouseEvent>) => {
-      e.stopPropagation();
-      rotAxis = firstCoord;
-      whichAxis = hovered![firstCoord];
-      let touchPoint = hovered![zPlane];
-      reverse =
-        (zPlane == "z" && touchPoint == -1) ||
-        (zPlane == "x" && touchPoint == 1) ||
-        (zPlane == "y" && touchPoint == -1 && num % 2 == 2) ||
-        (zPlane == "y" && touchPoint == 1 && num % 2 == 1)
-          ? !plus
-          : plus;
-      start();
-    }}
   >
-    <T.ConeGeometry args={[0.1, 0.5]} />
-    <T.MeshBasicMaterial color={["pink", "blue", "green", "maroon"][num]} />
-  </T.Mesh>
+    <T.Mesh
+      rotation.x={-degree90}
+      onclick={(e: IntersectionEvent<MouseEvent>) => {
+        e.stopPropagation();
+        rotAxis = firstCoord;
+        whichAxis = hovered![firstCoord];
+        let touchPoint = hovered![zPlane];
+        reverse =
+          (zPlane == "z" && touchPoint == -1) ||
+          (zPlane == "x" && touchPoint == 1) ||
+          (zPlane == "y" && touchPoint == -1 && num % 2 == 2) ||
+          (zPlane == "y" && touchPoint == 1 && num % 2 == 1)
+            ? !plus
+            : plus;
+        start();
+      }}
+    >
+      <T.ConeGeometry args={[0.1, 0.3]} />
+      <T.MeshBasicMaterial color="gray" />
+    </T.Mesh>
+  </T.Group>
 {/snippet}
 
 {#if hovered != null}
