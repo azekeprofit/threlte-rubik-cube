@@ -44,7 +44,8 @@
 {#snippet arrow(
   firstCoord: rotAxisType,
   secondCoord: rotAxisType,
-  plus: boolean
+  plus: boolean,
+  num:number
 )}
   <T.Mesh
     position={xy(firstCoord, secondCoord, plus)}
@@ -53,14 +54,13 @@
       rotAxis = firstCoord;
       whichAxis = hovered![firstCoord];
       let touchPoint = hovered![zPlane];
+      console.dir(num)
       reverse =
         (zPlane == "z" && touchPoint == -1) ||
         (zPlane == "x" && touchPoint == 1) ||
-        (zPlane == "y" && touchPoint == -1)
+        (zPlane == "y" && touchPoint == -1 && num==2)
           ? !plus
           : plus;
-
-      console.dir([whichAxis, touchPoint, plus, reverse, zPlane]);
       start();
     }}
   >
@@ -70,8 +70,8 @@
 {/snippet}
 
 {#if hovered != null}
-  {@render arrow(f[0], f[1], true)}
-  {@render arrow(f[1], f[0], true)}
-  {@render arrow(f[0], f[1], false)}
-  {@render arrow(f[1], f[0], false)}
+  {@render arrow(f[0], f[1], true,1)}
+  {@render arrow(f[1], f[0], true,2)}
+  {@render arrow(f[0], f[1], false,1)}
+  {@render arrow(f[1], f[0], false,2)}
 {/if}
