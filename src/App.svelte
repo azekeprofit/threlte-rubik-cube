@@ -22,15 +22,16 @@
       <input type="checkbox" bind:checked={debug} />debug
     </label>
   </div>
-  <div>
-    hovered: {hovered?.x}: {hovered?.y}: {hovered?.z}
-  </div>
+  {#if debug}
+    <div>
+      hovered: {hovered?.x}: {hovered?.y}: {hovered?.z}
+    </div>
 
-  <div>
-    zPlane: {zPlane}
-    
-  </div>
-  <div>
-    f: {flatAxes(zPlane)}
-  </div>
+    <div>
+      zPlane: {zPlane}
+    </div>
+    <div>
+      f: {flatAxes(zPlane)}
+    </div>
+  {/if}
 </div>

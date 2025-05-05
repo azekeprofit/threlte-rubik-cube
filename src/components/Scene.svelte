@@ -11,7 +11,6 @@
   import { SvelteMap } from "svelte/reactivity";
   import type { CubeColor } from "../model/cube.svelte";
   import {
-    allDirections,
     assetPath,
     calculateRing,
     degree90,
@@ -31,12 +30,12 @@
 
   let {
     debug,
-    hovered=$bindable(),
-    zPlane=$bindable(),
+    hovered = $bindable(),
+    zPlane = $bindable(),
   }: {
     debug: boolean;
-    hovered:CubeColor|null;
-    zPlane:rotAxisType,
+    hovered: CubeColor | null;
+    zPlane: rotAxisType;
   } = $props();
 
   let whichAxis = $state<(typeof positions)[number]>(1);
@@ -45,19 +44,7 @@
   let colors = new SvelteMap<string, CubeColor>();
 
   let ring = $derived(calculateRing(colors, rotAxis, whichAxis));
-  let directions = $derived(
-    hovered ? allDirections(colors, zPlane) : undefined
-  );
   let angle = new Tween(0, { duration: 1000, easing: expoOut });
-
-  function arrow(axis: rotAxisType, rev: boolean) {
-    if (hovered && directions) {
-      const dir = directions[axis];
-      rotAxis = dir.axis;
-      whichAxis = hovered[rotAxis];
-      reverse = rev ? !dir.reverse : dir.reverse;
-    }
-  }
 
   function start() {
     const yReverse = rotAxis == "y" ? !reverse : reverse;
